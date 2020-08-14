@@ -1,6 +1,6 @@
 const userInterface = require('./userInterface.js');
 const initial = require('../../invoke/initial.js');
-const query = require('../../invoke/query.js');
+const runtime = require('../../invoke/runtime.js');
 
 const handleGETUserDetails = async (req, res) => {
     try {
@@ -57,9 +57,16 @@ const handlePOSTRegister = async (req, res) => {
 }
 
 
-const handlePOSTSettlement = async (req, res) => {
+const handlePOSTIssueSettlement = async (req, res) => {
     try {
         let settlementObject = req.body.settlementObject;
+        let payer = res.locals.middlewareResponse.user.username;
+        let payee = settlementObject.payee;
+        let value = settlementObject.value;
+        let bank = res.locals.middlewareResponse.user.bank;
+        let issuedSettlement = await runtime.issueSettlement(payer, payee, value, bank);
+
+
 
         let settlement = {
             payer: res.locals.middlewareResponse.user.username,
@@ -79,5 +86,5 @@ const handlePOSTSettlement = async (req, res) => {
 module.exports = {
     handleGETUserDetails,
     handlePOSTRegister,
-    handlePOSTSettlement
+    handlePOSTIssueSettlement
 }

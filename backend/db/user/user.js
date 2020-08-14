@@ -42,11 +42,6 @@ const userSchema = new Schema({
         required: true,
         default: new Date()
     },
-    userType: {
-        type: String,
-        enum: ['SCHEDULED_BANK', 'CENTRAL_BANK'],
-        required: true
-    },
     bdtTokens: {
         type: Number,
         required: true

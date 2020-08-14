@@ -22,7 +22,10 @@ let enrollCentralBank = async () => {
         const identity = await wallet.get('central-bank');
         if (identity) {
             console.log('An identity for the admin user "central-bank" already exists in the wallet.');
-            return false;
+            return {
+                status: 'ERROR',
+                message: 'An identity for the admin user "central-bank" already exists in the wallet.'
+            };
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
@@ -37,11 +40,17 @@ let enrollCentralBank = async () => {
         };
         await wallet.put('central-bank', x509Identity);
         console.log('Successfully enrolled admin user "central-bank" and imported it into the wallet.');
-        return true;
+        return {
+            status: 'OK',
+            message: 'Successfully enrolled admin user "central-bank" and imported it into the wallet.'
+        };
 
     } catch (error) {
         console.error(`Failed to enroll admin user "central-bank": ${error}`);
-        return false;
+        return {
+            status: 'ERROR',
+            message: error.message
+        };
     }
 }
 
@@ -64,7 +73,10 @@ let enrollBank001 = async () => {
         const identity = await wallet.get('bank-001');
         if (identity) {
             console.log('An identity for the admin user "bank-001" already exists in the wallet.');
-            return false;
+            return {
+                status: 'ERROR',
+                message: 'An identity for the admin user "bank-001" already exists in the wallet.'
+            };
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
@@ -78,12 +90,20 @@ let enrollBank001 = async () => {
             type: 'X.509'
         };
         await wallet.put('bank-001', x509Identity);
+
         console.log('Successfully enrolled admin user "bank-001" and imported it into the wallet.');
-        return true;
+
+        return {
+            status: 'OK',
+            message: 'Successfully enrolled admin user "bank-001" and imported it into the wallet.'
+        };
 
     } catch (error) {
         console.error(`Failed to enroll admin user "bank-001": ${error}`);
-        return false;
+        return {
+            status: 'ERROR',
+            message: error.message
+        };
     }
 }
 
@@ -106,7 +126,10 @@ let enrollBank002 = async () => {
         const identity = await wallet.get('bank-002');
         if (identity) {
             console.log('An identity for the admin user "bank-002" already exists in the wallet.');
-            return false;
+            return {
+                status: 'ERROR',
+                message: 'An identity for the admin user "bank-002" already exists in the wallet.'
+            };
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
@@ -120,13 +143,20 @@ let enrollBank002 = async () => {
             type: 'X.509'
         };
         await wallet.put('bank-002', x509Identity);
+
         console.log('Successfully enrolled admin user "bank-002" and imported it into the wallet.');
 
-        return true;
+        return {
+            status: 'OK',
+            message: 'Successfully enrolled admin user "bank-002" and imported it into the wallet.'
+        };
 
     } catch (error) {
         console.error(`Failed to enroll admin user "bank-002": ${error}`);
-        return false;
+        return {
+            status: 'ERROR',
+            message: error.message
+        };
     }
 }
 

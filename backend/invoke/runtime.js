@@ -23,6 +23,14 @@ function resolveOrganization(bank) {
     return {orgDir, connectionDir};
 }
 
+/**
+ * Issuing of a settlement by the payer to the payee
+ * @param {String} payer The payer of this settlement.
+ * @param {String} payee The payee of this settlement.
+ * @param {String} value The payable value of this settlement.
+ * @param {String} bank The bank to which the payer belongs.
+ * @returns {JSON} The settlement that has been issued.
+ */
 let issueSettlement = async (payer, payee, value, bank) => {
     try {
         let {orgDir, connectionDir} = resolveOrganization(bank);
@@ -336,7 +344,11 @@ let cashTransaction = async (transactor, value, bank, transactionType) => {
 
         // create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccp, {wallet, identity: transactor + bank, discovery: {enabled: true, asLocalhost: true}});
+        await gateway.connect(ccp, {
+            wallet,
+            identity: transactor + bank,
+            discovery: {enabled: true, asLocalhost: true}
+        });
 
         // get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('mychannel');
