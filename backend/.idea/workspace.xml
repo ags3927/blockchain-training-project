@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/invoke/initial.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/bank/bank.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/bank/bankController.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/bank/bankInterface.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userInterface.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoke/invokeChaincode.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/query.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/authenticate.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/authenticate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/invoke/query.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/query.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +43,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1597411426661</updated>
-      <workItem from="1597411427733" duration="6210000" />
+      <workItem from="1597411427733" duration="11087000" />
     </task>
     <servers />
   </component>

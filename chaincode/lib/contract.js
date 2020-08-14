@@ -6,6 +6,10 @@ const { Contract } = require('fabric-contract-api');
 // The Settlement model
 const Settlement = require('./settlement.js');
 
+// The CashTransaction model
+const CashTransaction = require('./cashTransaction.js');
+
+
 /**
  * The rtgs smart contract
  */
@@ -136,11 +140,13 @@ class RTGSContract extends Contract {
     /**
      * View all settlements in the store.
      * @param {Context} ctx The transaction context.
+     * @param {String} payer The payer of this settlement.
+     * @param {String} payee The payee of this settlement.
      */
-    async viewAllSettlements(ctx) {
+    async viewAllSettlements(ctx, payer, payee) {
         // Retrieve all settlements stored in the data store.
         const settlements = [];
-        for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [])) {
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [payer, payee])) {
             const strValue = Buffer.from(result.value).toString('utf8');
             try {
                 let settlement = new Settlement(JSON.parse(strValue));
@@ -152,27 +158,94 @@ class RTGSContract extends Contract {
 
         return settlements;
     }
+
 
     /**
-     * View all settlements in the store before or after a certain time.
+     * Deposit cash and convert to bdtToken in the RTGS account.
      * @param {Context} ctx The transaction context.
-     * @param {String} timestamp The time of issuing the settlement.
+     * @param {*} depositor The depositor of this deposit.
+     * @param {*} value The amount of money deposited.
      */
-    async viewSettlementsByTime(ctx, before, timestamp) {
-        // Retrieve all settlements stored in the data store before or after a certain time.
-        const settlements = [];
-        for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [])) {
+    async deposit(ctx, depositor, value) {
+                
+        let timestamp = new Date();
+
+        // Create a composite key 'DP{depositor}{timestamp}' for this cash transaction.
+        let key = ctx.stub.createCompositeKey('DP', [depositor, timestamp]);
+
+        // Create a new cash transaction object with the input data.
+        const deposit = new CashTransaction(depositor, timestamp, value);
+
+        // Save the cash transaction in the datastore.
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(deposit)));
+
+        return deposit;
+    }
+
+    
+    /**
+     * View deposits in the RTGS account.
+     * @param {Context} ctx The transaction context.
+     * @param {*} depositor The depositor of the deposits to fetch.
+     */
+    async viewAllDeposits(ctx, depositor) {
+        // Retrieve all deposits in the data store.
+        const deposits = [];
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('DP', [depositor])) {
             const strValue = Buffer.from(result.value).toString('utf8');
             try {
-                let settlement = new Settlement(JSON.parse(strValue));
-                settlements.push(settlement);
+                let deposit = new Settlement(JSON.parse(strValue));
+                deposits.push(deposit);
             } catch (error) {
                 throw error;
             }
         }
-
-        return settlements;
+        return deposits;
     }
+    
+    /**
+     * Withdraw cash and destroy bdtToken from the RTGS account.
+     * @param {Context} ctx The transaction context.
+     * @param {*} depositor The withdrawer of this withdraw.
+     * @param {*} value The amount of money withdrawn.
+     */
+    async withdraw(ctx, withdrawer, value) {
+                
+        let timestamp = new Date();
+
+        // Create a composite key 'DP{depositor}{timestamp}' for this cash transaction.
+        let key = ctx.stub.createCompositeKey('WD', [withdrawer, timestamp]);
+
+        // Create a new cash transaction object with the input data.
+        const withdraw = new CashTransaction(withdrawer, timestamp, value);
+
+        // Save the cash transaction in the datastore.
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(withdraw)));
+
+        return withdraw;
+    } 
+    
+
+    /**
+     * View withdrawals in the RTGS account.
+     * @param {Context} ctx The transaction context.
+     * @param {*} depositor The withdrawer of the withdrawals to fetch.
+     */
+    async viewAllWithdrawals(ctx, withdrawer) {
+        // Retrieve all deposits in the data store.
+        const withdrawals = [];
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('WD', [withdrawer])) {
+            const strValue = Buffer.from(result.value).toString('utf8');
+            try {
+                let withdrawal = new Settlement(JSON.parse(strValue));
+                withdrawals.push(withdrawal);
+            } catch (error) {
+                throw error;
+            }
+        }
+        return withdrawals;
+    }
+    
 }
 
 module.exports = RTGSContract;
