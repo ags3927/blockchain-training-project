@@ -1,144 +1,178 @@
 'use strict';
 
-// Fabric smart contract class
+// Fabric smart contract class and client identity classes
 const { Contract } = require('fabric-contract-api');
 
-// The Product model
-const Product = require('./product.js');
+// The Settlement model
+const Settlement = require('./settlement.js');
 
 /**
- * The e-store smart contract
+ * The rtgs smart contract
  */
-class EStoreContract extends Contract {
-
+class RTGSContract extends Contract {
     /**
-     * Initialize the ledger with a few products to start with.
+     * Initialize the ledger.
      * @param {Context} ctx the transaction context.
      */
     async initLedger(ctx) {
-        const products = [
-            {
-                vendor: 'apple',
-                name: 'airpods',
-                price: '1000',
-                owner: 'apple',
-                bought: false
-            },
-            {
-                vendor: 'microsoft',
-                name: 'office-suite',
-                price: '500',
-                owner: 'microsoft',
-                bought: false
-            }
-        ];
-
-        for (let i = 0; i < products.length; i++) {
-            await this.releaseProduct(ctx, products[i].vendor, products[i].name, products[i].price, 
-                products[i].owner, products[i].bought);
-        }
-
-        return products;
+        const settlements = [];
+        return settlements;
     }
 
     /**
-     * Release a new product into the store.
+     * Issue a new settlement into the store.
      * @param {Context} ctx The transaction context
-     * @param {String} vendor The vendor for this product.
-     * @param {String} name The name of this product.
-     * @param {String} price The product price
-     * @param {String} owner The owner of the product. If unbought, this field should be the same as the vendor.
-     * @param {Boolean} bought Whether this product has been bought yet.
+     * @param {String} payer The payer of this settlement.
+     * @param {String} payee The payee of this settlement.
+     * @param {Number} value The payable value of the settlement.
      */
-    async releaseProduct(ctx, vendor, name, price, owner, bought) {
-        // Create a composite key 'PROD{vendor}{name}' for this product.
-        let key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
-        // Create a new product object with the input data.
-        const product = new Product(vendor, name, price, owner, bought);
+    async issueSettlement(ctx, payer, payee, value) {
+        let timestamp = new Date();
 
-        // Save the product in the datastore.
-        await ctx.stub.putState(key, Buffer.from(JSON.stringify(product)));
+        // Create a composite key 'SM{payer}{payee}{timestamp}' for this settlement.
+        let key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
 
-        return product;
+        // Create a new settlement object with the input data.
+        const settlement = new Settlement(payer, payee, timestamp, value);
+
+        // Save the settlement in the datastore.
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(settlement)));
+
+        return settlement;
     }
 
     /**
-     * Buy a product from the store. The product must exist in the store first
-     * and be unbought.
-     * @param {String} ctx The transaction context.
-     * @param {String} vendor The product vendor.
-     * @param {String} name The product name.
-     * @param {String} newOwner The new owner for the product.
+     * 
+     * @param {Context} ctx The transaction context.
+     * @param {String} payer The payer of this settlement.
+     * @param {String} payee The payee of this settlement.
+     * @param {String} timestamp The timestamp when this settlement was issued.
      */
-    async buyProduct(ctx, vendor, name, newOwner) {
-        // Retrieve the product from the store based on its vendor and name.
-        const key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
-        const productAsBytes = await ctx.stub.getState(key);
+    async approveSettlement(ctx, payer, payee, timestamp) {
+
+        // Retrieve the settlement from the store based on its payer, payee and timestamp.
+        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        const settlementAsBytes = await ctx.stub.getState(key);
+
+        // Check whether the corresponding data in the data store exists.
+        if (!settlementAsBytes || settlementAsBytes.length === 0) {
+            throw new Error(`${key} does not exist.`);
+        }
+
+        // Deserialize the document into a settlement object.
+        const settlement = new Settlement(JSON.parse(settlementAsBytes.toString()));
+
+        // Check whether the settlement has already been approved.
+        if (settlement.getIsApproved()) {
+            throw new Error(`${key} is not available for approval.`);
+        }
         
-        // Check whether the corresponding document in the data store exists.
-        if (!productAsBytes || productAsBytes.length === 0) {
-            throw new Error(`${key} does not exist`);
+        // Update the settlement in the data store.
+        settlement.setIsApproved();
+        settlement.setApprovalTimestamp(new Date());
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(settlement)));
+
+        return settlement;
+    }
+
+    /**
+     * Finalize a settlement.
+     * @param {Context} ctx The transaction context.
+     * @param {String} payer The payer of this settlement.
+     * @param {String} payee The payee of this settlement.
+     * @param {String} timestamp The time of issuing the settlement.
+     */
+    async finalizeSettlement(ctx, payer, payee, timestamp) {
+
+        // Retrieve the settlement from the store based on its payer, payee and timestamp.
+        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        const settlementAsBytes = await ctx.stub.getState(key);
+
+        // Check whether the corresponding data in the data store exists.
+        if (!settlementAsBytes || settlementAsBytes.length === 0) {
+            throw new Error(`${key} does not exist.`);
         }
 
-        // Deserialize the document into a product object.
-        const product = Product.deserialize(JSON.parse(productAsBytes.toString()));
+        // Deserialize the document into a settlement object.
+        const settlement = new Settlement(JSON.parse(settlementAsBytes.toString()));
 
-        // Check whether the product has already been bought.
-        if (product.getIsBought()) {
-            throw new Error(`${key} is not available for purchase`);
+        // Check whether the settlement has already been finalized.
+        if (settlement.getIsFinalized()) {
+            throw new Error(`${key} is not available for finalization.`);
         }
 
-        // Update the product in the data store.
-        product.setOwner(newOwner);
-        product.setIsBought();
-        await ctx.stub.putState(key, Buffer.from(JSON.stringify(product)));
+        // Update the settlement in the data store.
+        settlement.setIsFinalized();
+        settlement.setFinalizationTimestamp(new Date());
 
-        return product;
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(settlement)));
+
+        return settlement;
     }
 
     /**
      * Retrieve information about a product.
-     * @param {String} ctx The transaction context.
-     * @param {String} vendor The product vendor.
-     * @param {String} name The product name.
+     * @param {Context} ctx The transaction context.
+     * @param {String} payer The payer of this settlement.
+     * @param {String} payee The payee of this settlement.
+     * @param {String} timestamp The time of issuing the settlement.
      */
-    async viewProduct(ctx, vendor, name) {
-        // Retrieve the product document from the data store based on its vendor and name.
-        const key = ctx.stub.createCompositeKey('PROD', [vendor, name]);
-        const productAsBytes = await ctx.stub.getState(key);
-        
-        // Check whether the product exists.
-        if (!productAsBytes || productAsBytes.length === 0) {
+    async viewSettlement(ctx, payer, payee, timestamp) {
+
+        // Retrieve the settlement from the store based on its payer, payee and timestamp.
+        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        const settlementAsBytes = await ctx.stub.getState(key);
+
+        // Check whether the corresponding data in the data store exists.
+        if (!settlementAsBytes || settlementAsBytes.length === 0) {
             throw new Error(`${key} does not exist`);
         }
 
-        // Return the product information.
-        return productAsBytes.toString();
+        // Return the settlement information.
+        return settlementAsBytes.toString();
     }
 
     /**
-     * View all unsold products in the store.
-     * @param {String} ctx The transaction context.
+     * View all settlements in the store.
+     * @param {Context} ctx The transaction context.
      */
-    async viewUnsoldProducts(ctx) {
-        // Retrieve all products stored in the data store.
-        const results = [];
-        for await (const result of ctx.stub.getStateByPartialCompositeKey('PROD', [])) {
-            const strValue = Buffer.from(result.value).toString('utf8');            
+    async viewAllSettlements(ctx) {
+        // Retrieve all settlements stored in the data store.
+        const settlements = [];
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [])) {
+            const strValue = Buffer.from(result.value).toString('utf8');
             try {
-                let product = Product.deserialize(JSON.parse(strValue));
-
-                // Only include those products that haven't been bought yet.
-                if (!product.getIsBought()) {
-                    results.push(product);
-                }
+                let settlement = new Settlement(JSON.parse(strValue));
+                settlements.push(settlement);
             } catch (error) {
                 throw error;
             }
         }
 
-        return results;
+        return settlements;
+    }
+
+    /**
+     * View all settlements in the store before or after a certain time.
+     * @param {Context} ctx The transaction context.
+     * @param {String} timestamp The time of issuing the settlement.
+     */
+    async viewSettlementsByTime(ctx, before, timestamp) {
+        // Retrieve all settlements stored in the data store before or after a certain time.
+        const settlements = [];
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [])) {
+            const strValue = Buffer.from(result.value).toString('utf8');
+            try {
+                let settlement = new Settlement(JSON.parse(strValue));
+                settlements.push(settlement);
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        return settlements;
     }
 }
 
-module.exports = EStoreContract;
+module.exports = RTGSContract;

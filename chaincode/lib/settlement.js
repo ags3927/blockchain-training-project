@@ -4,12 +4,15 @@
  * The Settlement Entity
  */
 class Settlement {
-    
+
     constructor(payer, payee, timestamp, value) {
         this.payer = payer;
         this.payee = payee;
-        this.timestamp = timestamp;
+        this.issueTimestamp = timestamp;
         this.value = value;
+        this.approvalTimestamp = null;
+        this.finalizationTimestamp = null;
+        this.isApproved = false;
         this.isFinalized = false;
     }
 
@@ -21,8 +24,16 @@ class Settlement {
         return this.payee;
     }
 
-    getTimestamp () {
-        return this.timestamp;
+    getIssueTimestamp() {
+        return this.issueTimestamp;
+    }
+
+    getApprovalTimestamp() {
+        return this.approvalTimestamp;
+    }
+
+    getFinalizationTimestamp() {
+        return this.finalizationTimestamp;
     }
 
     getValue() {
@@ -32,13 +43,25 @@ class Settlement {
     getIsFinalized() {
         return this.isFinalized;
     }
-    
+
+    getIsApproved() {
+        return this.isApproved;
+    }
+
+    setApprovalTimestamp(timestamp) {
+        this.approvalTimestamp = new Date(timestamp);
+    }
+
+    setFinalizationTimestamp(timestamp) {
+        this.finalizationTimestamp = new Date(timestamp);
+    }
+
     setIsFinalized() {
         this.isFinalized = true;
     }
 
-    static deserialize(data) {
-        return new Product(data.payer, data.payee, data.timestamp, data.value);
+    setIsApproved() {
+        this.isApproved = true;
     }
 }
 
