@@ -1,8 +1,8 @@
-const { Bank } = require('./bank.js');
+const { User } = require('./user.js');
 
-let insertBank = async (userObject) => {
+let insertUser = async (userObject) => {
     try {
-        let user = new Bank(userObject);
+        let user = new User(userObject);
         let data = await user.save();
 
         if (data.nInserted === 0){
@@ -27,10 +27,10 @@ let insertBank = async (userObject) => {
     }
 };
 
-let deleteBank = async (username) => {
+let deleteUser = async (username) => {
     try {
 
-        let data = await Bank.findOneAndDelete({ username });
+        let data = await User.findOneAndDelete({ username });
 
         if (data){
             return {
@@ -55,9 +55,9 @@ let deleteBank = async (username) => {
 };
 
 
-let findBankByQuery = async (query, option) => {
+let findUserByQuery = async (query, option) => {
     try {
-        let data = await Bank.findOne(query, option);
+        let data = await User.findOne(query, option);
 
         if (data){
             return {
@@ -82,9 +82,9 @@ let findBankByQuery = async (query, option) => {
     }
 };
 
-let findBankByIDAndUpdate = async (id, update) => {
+let findUserByIDAndUpdate = async (id, update) => {
     try {
-        let data = await Bank.findByIdAndUpdate(id, update);
+        let data = await User.findByIdAndUpdate(id, update);
 
         if (data){
             return {
@@ -110,8 +110,8 @@ let findBankByIDAndUpdate = async (id, update) => {
 };
 
 module.exports = {
-    insertBank,
-    deleteBank,
-    findBankByIDAndUpdate,
-    findBankByQuery
+    insertUser,
+    deleteUser,
+    findUserByIDAndUpdate,
+    findUserByQuery
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const bankController = require('../db/bank/bankController.js');
+const userController = require('../db/user/userController.js');
 const authenticate = require('../middlewares/authenticate.js');
 
 /* POST home page. */
@@ -12,6 +12,11 @@ router.post('/login',
 router.post('/logout',
     authenticate.handleAuthentication,
     authenticate.handlePOSTLogOut
+);
+
+router.post('/userdetails',
+    authenticate.handleAuthentication,
+    userController.handleGETUserDetails
 );
 
 module.exports = router;

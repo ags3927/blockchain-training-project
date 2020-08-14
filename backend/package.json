@@ -1,27 +1,54 @@
 {
-  "name": "backend",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
-  "dependencies": {
-    "axios": "^0.19.2",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "connect-history-api-fallback": "^1.6.0",
-    "cookie-parser": "~1.4.4",
-    "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.19",
-    "moment": "^2.27.0",
-    "moment-range": "^4.0.2",
-    "mongoose": "^5.9.25",
-    "morgan": "~1.9.1",
-    "nodemon": "^2.0.4"
-  }
+    "name": "backend",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "node ./bin/www"
+    },
+    "dependencies": {
+        "axios": "^0.19.2",
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.19.0",
+        "connect-history-api-fallback": "^1.6.0",
+        "cookie-parser": "~1.4.4",
+        "cors": "^2.8.5",
+        "debug": "~2.6.9",
+        "express": "~4.16.1",
+        "http-errors": "~1.6.3",
+        "jade": "~1.11.0",
+        "jsonwebtoken": "^8.5.1",
+        "lodash": "^4.17.19",
+        "moment": "^2.27.0",
+        "moment-range": "^4.0.2",
+        "mongoose": "^5.9.25",
+        "morgan": "~1.9.1",
+        "nodemon": "^2.0.4",
+        "fabric-ca-client": "^2.1.0",
+        "fabric-network": "^2.1.0"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "chai-as-promised": "^7.1.1",
+        "eslint": "^5.9.0",
+        "mocha": "^7.2.0",
+        "nyc": "^15.1.0",
+        "sinon": "^7.1.1",
+        "sinon-chai": "^3.3.0"
+    },
+    "nyc": {
+        "exclude": [
+            "coverage/**",
+            "test/**"
+        ],
+        "reporter": [
+            "text-summary",
+            "html"
+        ],
+        "all": true,
+        "check-coverage": true,
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+    }
 }

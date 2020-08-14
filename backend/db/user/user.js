@@ -4,7 +4,12 @@ const bcrypt = require('bcryptjs');
 
 const Schema = mongoose.Schema;
 
-const bankSchema = new Schema({
+const userSchema = new Schema({
+    bank: {
+        type: String,
+        required: true,
+        enum: ['BANK-001', 'BANK-002', 'CENTRAL-BANK']
+    },
     name: {
         type: String,
         required: true,
@@ -59,7 +64,7 @@ const bankSchema = new Schema({
     }]
 });
 
-bankSchema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
     let bank = this;
     if (bank.isModified('password')) {
         bcrypt.genSalt(10, (err, salt) => {
@@ -75,7 +80,7 @@ bankSchema.pre('save', function (next) {
 });
 
 
-const Bank = new mongoose.model('Bank', bankSchema);
+const User = new mongoose.model('Bank', userSchema);
 
-module.exports = { Bank };
+module.exports = { User };
 
