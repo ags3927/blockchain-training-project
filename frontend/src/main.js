@@ -19,6 +19,14 @@ const router = new VueRouter({
 // Vuex
 import {store} from './store/store'
 
+// Bootstrap-vue
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
+
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+
 new Vue({
   el: '#app',
 	store,

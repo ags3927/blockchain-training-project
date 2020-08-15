@@ -14,9 +14,13 @@ router.post('/logout',
     authenticate.handlePOSTLogOut
 );
 
-router.post('/userdetails',
+router.post('/signup',
+    userController.handlePOSTRegister
+);
+
+router.post('/sessiondetails',
     authenticate.handleAuthentication,
-    userController.handleGETUserDetails
+    userController.handleGETSessionDetails
 );
 
 router.post('/issuesettlement',
@@ -37,6 +41,11 @@ router.post('/finalizesettlement',
 router.post('/viewsettlement',
     authenticate.handleAuthentication,
     userController.handlePOSTViewSettlement
+);
+
+router.post('/viewsettlements',
+    authenticate.handleAuthentication,
+    userController.handlePOSTViewSettlements
 );
 
 router.post('/viewallsettlements',

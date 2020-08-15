@@ -138,12 +138,12 @@ class RTGSContract extends Contract {
     }
 
     /**
-     * View all settlements in the store.
+     * View all settlements for a (payer, payee) pair in the store.
      * @param {Context} ctx The transaction context.
      * @param {String} payer The payer of this settlement.
      * @param {String} payee The payee of this settlement.
      */
-    async viewAllSettlements(ctx, payer, payee) {
+    async viewSettlements(ctx, payer, payee) {
         // Retrieve all settlements stored in the data store.
         const settlements = [];
         for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [payer, payee])) {
@@ -159,6 +159,24 @@ class RTGSContract extends Contract {
         return settlements;
     }
 
+    /**
+     * Get all settlements stored in the data store.
+     * @param {Context} ctx The transaction context.
+     */
+    async viewAllSettlements(ctx) {
+        const settlements = []
+
+        for await (const result of ctx.stub.getStateByPartialCompositeKey('SM',[])) {
+            const strValue = Buffer.from(result.value).toString('utf8');
+            try {
+                let settlement = new Settlement(JSON.parse(strValue));
+                settlements.push(settlement);
+            } catch (error) {
+                throw error;
+            }
+        }
+        return settlements;
+    }
 
     /**
      * Deposit cash and convert to bdtToken in the RTGS account.
@@ -174,7 +192,7 @@ class RTGSContract extends Contract {
         let key = ctx.stub.createCompositeKey('DP', [depositor, timestamp]);
 
         // Create a new cash transaction object with the input data.
-        const deposit = new CashTransaction(depositor, timestamp, value);
+        const deposit = new CashTransaction(depositor, timestamp, value, 'deposit');
 
         // Save the cash transaction in the datastore.
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(deposit)));
@@ -217,7 +235,7 @@ class RTGSContract extends Contract {
         let key = ctx.stub.createCompositeKey('WD', [withdrawer, timestamp]);
 
         // Create a new cash transaction object with the input data.
-        const withdraw = new CashTransaction(withdrawer, timestamp, value);
+        const withdraw = new CashTransaction(withdrawer, timestamp, value, 'withdraw');
 
         // Save the cash transaction in the datastore.
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(withdraw)));

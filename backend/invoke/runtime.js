@@ -286,9 +286,9 @@ const viewSettlement = async (payer, payee, timestamp, viewer, bank) => {
  * @param {String} payee The payee of this settlement.
  * @param {String} viewer The payer, payee or the central bank.
  * @param {String} bank The bank of the one issuing the view request.
- * @returns {JSON} The settlements that have occurred between the payer and the payee.
+ * @returns [{JSON}] The settlements that have occurred between the payer and the payee.
  */
-const viewAllSettlements = async (payer, payee, viewer, bank) => {
+const viewSettlements = async (payer, payee, viewer, bank) => {
     try {
         if (payer !== viewer && payee !== viewer && viewer !== 'central-bank') return {
             status: 'ERROR',
@@ -332,7 +332,7 @@ const viewAllSettlements = async (payer, payee, viewer, bank) => {
         const contract = network.getContract('rtgs');
 
         // evaluate the specified transaction.
-        const settlements = await contract.evaluateTransaction('viewAllSettlements', payer, payee);
+        const settlements = await contract.evaluateTransaction('viewSettlements', payer, payee);
         console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
@@ -340,6 +340,86 @@ const viewAllSettlements = async (payer, payee, viewer, bank) => {
         return {
             status: 'OK',
             settlements
+        };
+
+    } catch (error) {
+        console.error(`viewAllSettlements: Failed to evaluate or invoke transaction: ${error}`);
+        return {
+            status: 'ERROR',
+            message: error.message
+        };
+    }
+}
+
+/**
+ * View all settlements of a viewer or of all account holders (only for central bank) in the data store.
+ * @param {String} viewer The one who requested to view all settlements.
+ * @param {String} bank The bank of the viewer.
+ * @returns [{JSON}] The settlements requested.
+ */
+const viewAllSettlements = async (viewer, bank) => {
+    try {
+
+        let {orgDir, connectionDir} = resolveOrganization(bank);
+
+        const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations', orgDir, connectionDir);
+        ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+        // Create a new file system based wallet for managing identities.
+        const walletPath = path.join(process.cwd(), 'wallet');
+        wallet = await Wallets.newFileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+
+        let identityKey;
+
+        // Check to see if we've already enrolled the user.
+        if (bank === 'CENTRAL-BANK') identityKey = viewer;
+        else identityKey = viewer + bank;
+
+        const identity = await wallet.get(identityKey);
+
+        if (!identity) {
+            console.log(`An identity for the user ${identityKey} does not exist in the wallet`);
+            return {
+                status: 'ERROR',
+                message: `An identity for the user ${identityKey} does not exist in the wallet`
+            };
+        }
+
+        // create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, {wallet, identity: identityKey, discovery: {enabled: true, asLocalhost: true}});
+
+        // get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('mychannel');
+
+        // get the contract from the network.
+        const contract = network.getContract('rtgs');
+
+        // evaluate the specified transaction.
+        const settlements = await contract.evaluateTransaction('viewAllSettlements');
+        console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
+
+        await gateway.disconnect();
+
+        if (viewer === 'central-bank') {
+            return {
+                status: 'OK',
+                settlements
+            };
+        }
+
+        let filteredSettlements = [];
+
+        for (const settlement of settlements) {
+            if (settlement.payer === viewer || settlement.payee === viewer) {
+                filteredSettlements.push(settlement);
+            }
+        }
+
+        return {
+            status: 'OK',
+            filteredSettlements
         };
 
     } catch (error) {
@@ -497,6 +577,7 @@ module.exports = {
     approveSettlement,
     finalizeSettlement,
     viewSettlement,
+    viewSettlements,
     viewAllSettlements,
     cashTransaction,
     viewAllCashTransactions

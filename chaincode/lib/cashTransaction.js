@@ -5,10 +5,11 @@
  */
 class CashTransaction {
 
-    constructor(transactor, timestamp, value) {
+    constructor(transactor, timestamp, value, type) {
         this.transactor = transactor;
         this.timestamp = timestamp;
         this.value = value;
+        this.type = type;
     }
 
     getTransactor() {
@@ -21,6 +22,10 @@ class CashTransaction {
 
     getValue() {
         return this.value;
+    }
+
+    getType() {
+        return this.type;
     }
 }
 

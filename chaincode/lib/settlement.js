@@ -8,8 +8,8 @@ class Settlement {
     constructor(payer, payee, timestamp, value) {
         this.payer = payer;
         this.payee = payee;
-        this.issueTimestamp = timestamp;
         this.value = value;
+        this.issueTimestamp = timestamp;
         this.approvalTimestamp = null;
         this.finalizationTimestamp = null;
         this.isApproved = false;

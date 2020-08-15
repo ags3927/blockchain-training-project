@@ -2,7 +2,7 @@ const userInterface = require('./userInterface.js');
 const initial = require('../../invoke/initial.js');
 const runtime = require('../../invoke/runtime.js');
 
-const handleGETUserDetails = async (req, res) => {
+const handleGETSessionDetails = async (req, res) => {
     try {
         let user = res.locals.middlewareResponse.user;
 
@@ -58,12 +58,17 @@ const handlePOSTRegister = async (req, res) => {
 
 const handlePOSTIssueSettlement = async (req, res) => {
     try {
-
         let settlementObject = req.body.settlementObject;
         let payer = res.locals.middlewareResponse.user.username;
         let payee = settlementObject.payee;
         let value = settlementObject.value;
         let bank = res.locals.middlewareResponse.user.bank;
+
+        if (value > res.locals.middlewareResponse.user.bdtTokens) {
+            return res.status(400).send({
+                message: 'Insufficient Funds'
+            });
+        }
 
         let result = await runtime.issueSettlement(payer, payee, value, bank);
 
@@ -173,7 +178,7 @@ const handlePOSTViewSettlement = async (req, res) => {
     }
 }
 
-const handlePOSTViewAllSettlements = async (req, res) => {
+const handlePOSTViewSettlements = async (req, res) => {
     try {
         let settlementObject = req.body.settlementObject;
         let payer = settlementObject.payer;
@@ -181,7 +186,33 @@ const handlePOSTViewAllSettlements = async (req, res) => {
         let viewer = res.locals.middlewareResponse.user.username;
         let bank = res.locals.middlewareResponse.user.bank;
 
-        let result = await runtime.viewAllSettlements(payer, payee, viewer, bank);
+        let result = await runtime.viewSettlements(payer, payee, viewer, bank);
+
+        if (result.status === 'OK') {
+            return res.status(200).send({
+                message: 'Settlements fetched successfully',
+                settlements: result.settlements
+            });
+        } else {
+            return res.status(400).send({
+                message: 'Settlements could not be fetched'
+            });
+        }
+
+    } catch (e) {
+        return res.status(400).send({
+            status: 'ERROR',
+            message: e.message
+        });
+    }
+}
+
+const handlePOSTViewAllSettlements = async (req, res) => {
+    try {
+        let viewer = res.locals.middlewareResponse.user.username;
+        let bank = res.locals.middlewareResponse.user.bank;
+
+        let result = await runtime.viewAllSettlements(viewer, bank);
 
         if (result.status === 'OK') {
             return res.status(200).send({
@@ -281,14 +312,16 @@ const handlePOSTViewAllUsers = async (req, res) => {
 }
 
 module.exports = {
-    handleGETUserDetails,
+    handleGETSessionDetails,
     handlePOSTRegister,
     handlePOSTIssueSettlement,
     handlePOSTApproveSettlement,
     handlePOSTFinalizeSettlement,
     handlePOSTViewSettlement,
+    handlePOSTViewSettlements,
     handlePOSTViewAllSettlements,
     handlePOSTCashTransaction,
     handlePOSTViewAllCashTransactions,
-    handlePOSTViewAllUsers
+    handlePOSTViewAllUsers,
+    handleGETUserDetails
 }

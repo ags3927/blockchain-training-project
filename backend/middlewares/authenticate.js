@@ -60,7 +60,7 @@ const handleAuthentication = async (req, res, next) => {
             address: 1,
             contact: 1,
             bdtTokens: 1,
-            bank: 1
+            bank: 1,
         });
 
         let user = userData.data;

@@ -7,14 +7,12 @@ export const store = new Vuex.Store({
 	state: {
 		loggedIn: false,
 		sessionDetails: {
-			name: '',
-			username: '',
-			address: '',
-			contact: '',
-			bank: '',
-			bdtToken: '',
-			_id: '0',
-			userType: ''
+			name: 'Aniruddha',
+			username: 'ags',
+			address: 'Kalabagan',
+			contact: '+8801816394369',
+			bank: 'BANK-001',
+			bdtTokens: 1100
 		},
 		sessionToken: '',
 		serverBaseURL: 'http://localhost:3000/api/',
