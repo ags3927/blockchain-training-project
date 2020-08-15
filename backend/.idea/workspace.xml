@@ -3,10 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/user/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/user/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userController.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/user/userInterface.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userInterface.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoke/runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/runtime.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middlewares/authenticate.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/authenticate.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +46,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1597411426661</updated>
-      <workItem from="1597411427733" duration="18498000" />
+      <workItem from="1597411427733" duration="20098000" />
     </task>
     <servers />
   </component>

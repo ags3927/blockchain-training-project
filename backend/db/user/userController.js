@@ -259,10 +259,19 @@ const handlePOSTViewAllCashTransactions = async (req, res) => {
     }
 }
 
-const handlePOSTViewUserList = async (req, res) => {
+const handlePOSTViewAllUsers = async (req, res) => {
     try {
-        
+        let result = await userInterface.findAllUsers();
 
+        if (result.status === 'OK') {
+            return res.status(200).send({
+                users: result.data
+            });
+        } else {
+            return res.status(400).send({
+                message: result.message
+            });
+        }
     } catch (e) {
         return res.status(400).send({
             status: 'ERROR',
@@ -281,5 +290,5 @@ module.exports = {
     handlePOSTViewAllSettlements,
     handlePOSTCashTransaction,
     handlePOSTViewAllCashTransactions,
-
+    handlePOSTViewAllUsers
 }

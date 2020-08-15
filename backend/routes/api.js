@@ -34,4 +34,30 @@ router.post('/finalizesettlement',
     userController.handlePOSTFinalizeSettlement
 );
 
+router.post('/viewsettlement',
+    authenticate.handleAuthentication,
+    userController.handlePOSTViewSettlement
+);
+
+router.post('/viewallsettlements',
+    authenticate.handleAuthentication,
+    userController.handlePOSTViewAllSettlements
+);
+
+router.post('/cashtransaction',
+    authenticate.handleAuthentication,
+    userController.handlePOSTCashTransaction
+);
+
+router.post('/viewallcashtransactions',
+    authenticate.handleAuthentication,
+    userController.handlePOSTViewAllCashTransactions
+);
+
+router.post('/viewallusers',
+    authenticate.handleAuthentication,
+    userController.handlePOSTViewAllUsers
+);
+
+
 module.exports = router;

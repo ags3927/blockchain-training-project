@@ -5,11 +5,6 @@ const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    bank: {
-        type: String,
-        required: true,
-        enum: ['BANK-001', 'BANK-002', 'CENTRAL-BANK']
-    },
     name: {
         type: String,
         required: true,
@@ -25,6 +20,11 @@ const userSchema = new Schema({
         type: String,
         trim: true,
         minlength: 1
+    },
+    bank: {
+        type: String,
+        required: true,
+        enum: ['BANK-001', 'BANK-002', 'CENTRAL-BANK']
     },
     username: {
         type: String,
@@ -67,8 +67,8 @@ userSchema.pre('save', function (next) {
                 bank.password = hash;
                 bank.lastUpdated = new Date();
                 next();
-            })
-        })
+            });
+        });
     } else {
         next();
     }

@@ -54,7 +54,6 @@ const deleteUser = async (username) => {
     }
 };
 
-
 const findUserByQuery = async (query, option) => {
     try {
         let data = await User.findOne(query, option);
@@ -71,6 +70,30 @@ const findUserByQuery = async (query, option) => {
                 message: 'User Not Found',
                 status: 'ERROR'
             };
+        }
+
+    } catch (e) {
+        return {
+            data: null,
+            message: e.message,
+            status: 'ERROR'
+        };
+    }
+};
+
+const findAllUsers = async () => {
+    try {
+        let data = await User.find({}, {
+            __v: 0,
+            _id: 0,
+            name: 1,
+            username: 1,
+            bank: 1
+        });
+
+        return {
+            data,
+            status: 'OK'
         }
 
     } catch (e) {
@@ -113,5 +136,6 @@ module.exports = {
     insertUser,
     deleteUser,
     findUserByIDAndUpdate,
-    findUserByQuery
+    findUserByQuery,
+    findAllUsers
 }
