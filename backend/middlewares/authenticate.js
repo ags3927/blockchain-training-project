@@ -25,7 +25,17 @@ const handlePOSTLogIn = async (req, res) => {
             let token = await jwt.sign({_id: user._id.toString(), access}, 'lekhaporakorejegarighorachoreshey').toString();
             user.tokens.push({access,token});
             user.save();
-            return res.status(200).send({token});
+            return res.status(200).send({
+                token,
+                user: {
+                    name: user.name,
+                    username: user.username,
+                    address: user.address,
+                    contact: user.contact,
+                    bank: user.bank,
+                    bdtTokens: user.bdtTokens
+                }
+            });
         } else {
             return res.status(401).send({
                 message: "Incorrect password"

@@ -12,7 +12,8 @@
   "dependencies": {
     "sweetalert2": "^9.17.1",
     "vue": "^2.5.11",
-    "vue-router": "^3.4.3"
+    "vue-router": "^3.4.3",
+    "vuex": "^3.5.1"
   },
   "browserslist": [
     "> 1%",
