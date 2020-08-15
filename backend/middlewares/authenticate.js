@@ -55,12 +55,12 @@ const handleAuthentication = async (req, res, next) => {
         let decodedUser =  await jwt.verify(token,'lekhaporakorejegarighorachoreshey');
 
         let userData = await userInterface.findUserByQuery({ _id: decodedUser._id }, {
-            username: 1,
             name: 1,
+            username: 1,
             address: 1,
             contact: 1,
-            bdtTokens: 1,
             bank: 1,
+            bdtTokens: 1
         });
 
         let user = userData.data;

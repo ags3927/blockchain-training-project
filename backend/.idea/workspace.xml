@@ -2,21 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../frontend/src/components/LoginSignup.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/mongoose.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/mongoose.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/user/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/user/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/user/userInterface.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userInterface.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/invoke/initial.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/initial.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/invoke/runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/runtime.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middlewares/authenticate.js" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/authenticate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chaincode/lib/cashTransaction.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chaincode/lib/cashTransaction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chaincode/lib/contract.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chaincode/lib/contract.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chaincode/lib/settlement.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chaincode/lib/settlement.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/Home.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/routes/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/routes/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/store/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/store/store.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/LoginSignup.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/LoginSignup.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +52,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1597411426661</updated>
-      <workItem from="1597411427733" duration="28750000" />
+      <workItem from="1597411427733" duration="46412000" />
     </task>
     <servers />
   </component>
@@ -84,6 +80,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="416" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597413276568" />
+    <state x="75" y="137" width="1695" height="772" key="dock-window-1" timestamp="1597513403641">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="75" y="137" width="1695" height="772" key="dock-window-1/0.0.1920.1040@0.0.1920.1040" timestamp="1597513403641" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1597485016170">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

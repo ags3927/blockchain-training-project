@@ -192,7 +192,7 @@ class RTGSContract extends Contract {
         let key = ctx.stub.createCompositeKey('DP', [depositor, timestamp]);
 
         // Create a new cash transaction object with the input data.
-        const deposit = new CashTransaction(depositor, timestamp, value, 'deposit');
+        const deposit = new CashTransaction(depositor.toString(), timestamp.toString(), value.toString(), 'deposit');
 
         // Save the cash transaction in the datastore.
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(deposit)));

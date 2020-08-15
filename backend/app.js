@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV || 'development';
 
 console.log(env);
 
-process.env.MONGODB_URI = 'mongodb://localhost:27017/rtgs-project';
+process.env.MONGODB_URI = 'mongodb+srv://admin:test1234@cluster0.8uldc.gcp.mongodb.net/Cluster0?retryWrites=true&w=majority';
 
 
 const history = require('connect-history-api-fallback');
@@ -34,13 +34,35 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
-//SPA Handling
+// SPA Handling
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(history());
 app.use(bodyParser.json());
 app.use(cors());
 
+// Invoking initial chaincode
+const initial = require('./invoke/initial.js');
 
+initial.enrollCentralBank().then(res => {
+    console.log(res.message);
+}).catch(err => {
+    console.log(err);
+});
+
+initial.enrollBank001().then(res => {
+    console.log(res.message);
+}).catch(err => {
+    console.log(err);
+});
+
+initial.enrollBank002().then(res => {
+    console.log(res.message);
+}).catch(err => {
+    console.log(err);
+});
+
+
+// Set up routing
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);

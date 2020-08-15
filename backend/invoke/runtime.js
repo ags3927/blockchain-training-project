@@ -66,7 +66,7 @@ const issueSettlement = async (payer, payee, value, bank) => {
 
         // submit the specified transaction.
         const issuedSettlement = await contract.submitTransaction('issueSettlement', payer, payee, value);
-        console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
+        console.log(`Transaction has been submitted. Result is: ${issuedSettlement.toString()}`);
 
         await gateway.disconnect();
 
@@ -127,7 +127,7 @@ const approveSettlement = async (payer, payee, timestamp, bank) => {
 
         // submit the specified transaction.
         const approvedSettlement = await contract.submitTransaction('approveSettlement', payer, payee, timestamp);
-        console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
+        console.log(`Transaction has been submitted. Result is: ${approvedSettlement.toString()}`);
 
         await gateway.disconnect();
 
@@ -188,7 +188,7 @@ const finalizeSettlement = async (payer, payee, timestamp) => {
 
         // submit the specified transaction.
         const finalizedSettlement = await contract.submitTransaction('finalizeSettlement', payer, payee, timestamp);
-        console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
+        console.log(`Transaction has been submitted. Result is: ${finalizedSettlement.toString()}`);
 
         await gateway.disconnect();
 
@@ -262,7 +262,7 @@ const viewSettlement = async (payer, payee, timestamp, viewer, bank) => {
 
         // evaluate the specified transaction.
         const settlement = await contract.evaluateTransaction('viewSettlement', payer, payee, timestamp);
-        console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
+        console.log(`Transaction has been evaluated. Result is: ${settlement.toString()}`);
 
         await gateway.disconnect();
 
@@ -333,7 +333,7 @@ const viewSettlements = async (payer, payee, viewer, bank) => {
 
         // evaluate the specified transaction.
         const settlements = await contract.evaluateTransaction('viewSettlements', payer, payee);
-        console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
+        console.log(`Transaction has been evaluated. Result is: ${settlements.toString()}`);
 
         await gateway.disconnect();
 
@@ -398,7 +398,7 @@ const viewAllSettlements = async (viewer, bank) => {
 
         // evaluate the specified transaction.
         const settlements = await contract.evaluateTransaction('viewAllSettlements');
-        console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
+        console.log(`Transaction has been evaluated. Result is: ${settlements.toString()}`);
 
         await gateway.disconnect();
 
@@ -483,8 +483,12 @@ const cashTransaction = async (transactor, value, bank, transactionType) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
+        console.log('JUST BEFORE TRANSACTION');
+        console.log(transactionType);
+        console.log(transactor);
+        console.log(value);
         const cashTransaction = await contract.submitTransaction(transactionType, transactor, value);
-        console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
+        console.log(`Transaction has been submitted. Result is: ${cashTransaction.toString()}`);
 
         await gateway.disconnect();
 
@@ -513,7 +517,7 @@ const viewAllCashTransactions = async (transactor, bank, transactionType) => {
 
     if (transactionType !== 'deposit' && transactionType !== 'withdraw') {
         return {
-            status: 'ERRPR',
+            status: 'ERROR',
             message: 'Invalid transaction type'
         }
     }
@@ -554,7 +558,7 @@ const viewAllCashTransactions = async (transactor, bank, transactionType) => {
 
         // submit the specified transaction.
         const cashTransactions = await contract.submitTransaction(transactionName, transactor);
-        console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
+        console.log(`Transaction has been submitted. Result is: ${cashTransactions.toString()}`);
 
         await gateway.disconnect();
 

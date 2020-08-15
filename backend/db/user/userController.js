@@ -8,10 +8,12 @@ const handleGETSessionDetails = async (req, res) => {
 
         return res.status(200).send({
             status: 'OK',
-            bank: {
+            sessionDetails: {
                 name: user.name,
+                username: user.username,
                 address: user.address,
                 contact: user.contact,
+                bank: user.bank,
                 bdtTokens: user.bdtTokens
             }
         });
@@ -236,10 +238,15 @@ const handlePOSTViewAllSettlements = async (req, res) => {
 const handlePOSTCashTransaction = async (req, res) => {
     try {
         let transactionObject = req.body.transactionObject;
+        console.log(transactionObject);
+
         let transactor = res.locals.middlewareResponse.user.username;
         let value = transactionObject.value;
         let bank = res.locals.middlewareResponse.user.bank;
         let transactionType = transactionObject.transactionType;
+        console.log(transactor);
+        console.log(value);
+        console.log(bank);
 
         let result = await runtime.cashTransaction(transactor, value, bank, transactionType);
 
@@ -264,17 +271,32 @@ const handlePOSTCashTransaction = async (req, res) => {
 
 const handlePOSTViewAllCashTransactions = async (req, res) => {
     try {
-        let transactionObject = req.body.transactionObject;
         let transactor = res.locals.middlewareResponse.user.username;
         let bank = res.locals.middlewareResponse.user.bank;
-        let transactionType = transactionObject.transactionType;
 
-        let result = await runtime.viewAllCashTransactions(transactor, bank, transactionType);
+        let resultDeposits = await runtime.viewAllCashTransactions(transactor, bank, 'deposit');
+        // console.log('Deposits Queried');
+        let resultWithdrawals = await runtime.viewAllCashTransactions(transactor, bank, 'withdraw');
+        // console.log('Withdrawals Queried');
 
-        if (result.status === 'OK') {
+        let cashTransactions = [];
+        if (resultDeposits.length > 0) {
+            for (const data of resultDeposits.cashTransactions) {
+                cashTransactions.push(data);
+            }
+        }
+
+        if (resultWithdrawals.length > 0) {
+            for (const data of resultWithdrawals.cashTransactions) {
+                cashTransactions.push(data);
+            }
+        }
+
+        if (resultDeposits.status === 'OK' && resultWithdrawals.status === 'OK') {
+            // console.log('Successful');
             return res.status(200).send({
                 message: 'Cash transactions fetched successfully',
-                cashTransactions: result.cashTransactions
+                cashTransactions
             });
         } else {
             return res.status(400).send({
@@ -283,6 +305,7 @@ const handlePOSTViewAllCashTransactions = async (req, res) => {
         }
 
     } catch (e) {
+        console.log(e);
         return res.status(400).send({
             status: 'ERROR',
             message: e.message
@@ -295,6 +318,7 @@ const handlePOSTViewAllUsers = async (req, res) => {
         let result = await userInterface.findAllUsers();
 
         if (result.status === 'OK') {
+            console.log('successful');
             return res.status(200).send({
                 users: result.data
             });
@@ -322,6 +346,5 @@ module.exports = {
     handlePOSTViewAllSettlements,
     handlePOSTCashTransaction,
     handlePOSTViewAllCashTransactions,
-    handlePOSTViewAllUsers,
-    handleGETUserDetails
+    handlePOSTViewAllUsers
 }

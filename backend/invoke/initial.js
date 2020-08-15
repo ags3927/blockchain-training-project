@@ -8,6 +8,7 @@ let enrollCentralBank = async () => {
         // load the network configuration
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations/org3.example.com/connection-org3.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+        // console.log(JSON.stringify(ccp, undefined, 2));
 
         // Create a new CA client for interacting with the CA.
         const caInfo = ccp.certificateAuthorities['ca.org3.example.com'];
@@ -17,19 +18,21 @@ let enrollCentralBank = async () => {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
+        // console.log(`Wallet path: ${walletPath}`);
 
         const identity = await wallet.get('central-bank');
+
         if (identity) {
-            console.log('An identity for the admin user "central-bank" already exists in the wallet.');
+            // console.log('An identity for the admin user "central-bank" already exists in the wallet.');
             return {
                 status: 'ERROR',
                 message: 'An identity for the admin user "central-bank" already exists in the wallet.'
             };
         }
-
+        console.log('WAT');
         // Enroll the admin user, and import the new identity into the wallet.
-        const enrollment = await ca.enroll({ enrollmentID: 'central-bank', enrollmentSecret: 'central-bank-pw' });
+        const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'adminpw' });
+        console.log('WAT2');
         const x509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -39,14 +42,14 @@ let enrollCentralBank = async () => {
             type: 'X.509'
         };
         await wallet.put('central-bank', x509Identity);
-        console.log('Successfully enrolled admin user "central-bank" and imported it into the wallet.');
+        // console.log('Successfully enrolled admin user "central-bank" and imported it into the wallet.');
         return {
             status: 'OK',
             message: 'Successfully enrolled admin user "central-bank" and imported it into the wallet.'
         };
 
     } catch (error) {
-        console.error(`Failed to enroll admin user "central-bank": ${error}`);
+        // console.error(`Failed to enroll admin user "central-bank": ${error}`);
         return {
             status: 'ERROR',
             message: error.message
@@ -59,6 +62,7 @@ let enrollBank001 = async () => {
         // load the network configuration
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+        // console.log(JSON.stringify(ccp, undefined, 2));
 
         // Create a new CA client for interacting with the CA.
         const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
@@ -68,11 +72,11 @@ let enrollBank001 = async () => {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
+        // console.log(`Wallet path: ${walletPath}`);
 
         const identity = await wallet.get('bank-001');
         if (identity) {
-            console.log('An identity for the admin user "bank-001" already exists in the wallet.');
+            // console.log('An identity for the admin user "bank-001" already exists in the wallet.');
             return {
                 status: 'ERROR',
                 message: 'An identity for the admin user "bank-001" already exists in the wallet.'
@@ -80,7 +84,7 @@ let enrollBank001 = async () => {
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
-        const enrollment = await ca.enroll({ enrollmentID: 'bank-001', enrollmentSecret: 'bank-001-pw' });
+        const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'adminpw' });
         const x509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -91,7 +95,7 @@ let enrollBank001 = async () => {
         };
         await wallet.put('bank-001', x509Identity);
 
-        console.log('Successfully enrolled admin user "bank-001" and imported it into the wallet.');
+        // console.log('Successfully enrolled admin user "bank-001" and imported it into the wallet.');
 
         return {
             status: 'OK',
@@ -99,7 +103,7 @@ let enrollBank001 = async () => {
         };
 
     } catch (error) {
-        console.error(`Failed to enroll admin user "bank-001": ${error}`);
+        // console.error(`Failed to enroll admin user "bank-001": ${error}`);
         return {
             status: 'ERROR',
             message: error.message
@@ -112,6 +116,7 @@ let enrollBank002 = async () => {
         // load the network configuration
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/connection-org2.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+        // console.log(JSON.stringify(ccp, undefined, 2));
 
         // Create a new CA client for interacting with the CA.
         const caInfo = ccp.certificateAuthorities['ca.org2.example.com'];
@@ -121,11 +126,11 @@ let enrollBank002 = async () => {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
-        console.log(`Wallet path: ${walletPath}`);
+        // console.log(`Wallet path: ${walletPath}`);
 
         const identity = await wallet.get('bank-002');
         if (identity) {
-            console.log('An identity for the admin user "bank-002" already exists in the wallet.');
+            // console.log('An identity for the admin user "bank-002" already exists in the wallet.');
             return {
                 status: 'ERROR',
                 message: 'An identity for the admin user "bank-002" already exists in the wallet.'
@@ -133,7 +138,7 @@ let enrollBank002 = async () => {
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
-        const enrollment = await ca.enroll({ enrollmentID: 'bank-002', enrollmentSecret: 'bank-002-pw' });
+        const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'adminpw' });
         const x509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -144,7 +149,7 @@ let enrollBank002 = async () => {
         };
         await wallet.put('bank-002', x509Identity);
 
-        console.log('Successfully enrolled admin user "bank-002" and imported it into the wallet.');
+        // console.log('Successfully enrolled admin user "bank-002" and imported it into the wallet.');
 
         return {
             status: 'OK',
@@ -152,7 +157,7 @@ let enrollBank002 = async () => {
         };
 
     } catch (error) {
-        console.error(`Failed to enroll admin user "bank-002": ${error}`);
+        // console.error(`Failed to enroll admin user "bank-002": ${error}`);
         return {
             status: 'ERROR',
             message: error.message
@@ -162,22 +167,24 @@ let enrollBank002 = async () => {
 
 let enrollUser = async (user, bank) => {
     try {
-        let orgDir, connectionDir, caAuthority, adminName, mspName;
-        // load the network configuration
+        let orgDir, connectionDir, caAuthority, adminName, mspName, affiliation;
+
+        // Load the network configuration.
         if (bank === 'BANK-001') {
             orgDir = 'org1.example.com';
             connectionDir = 'connection-org1.json';
             caAuthority = 'ca.org1.example.com';
             adminName = 'bank-001';
             mspName = 'Org1MSP';
+            affiliation = 'org1.department1';
         } else {
             orgDir = 'org2.example.com';
             connectionDir = 'connection-org2.json';
             caAuthority = 'ca.org2.example.com';
             adminName = 'bank-002';
             mspName = 'Org2MSP';
+            affiliation = 'org2.department1';
         }
-
 
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations', orgDir, connectionDir);
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -192,9 +199,9 @@ let enrollUser = async (user, bank) => {
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
-        const userIdentity = await wallet.get(user + adminName);
+        const userIdentity = await wallet.get(user + bank);
         if (userIdentity) {
-            console.log(`An identity for the user "${user}" already exists in the wallet`);
+            console.log(`An identity for the user "${user + bank}" already exists in the wallet`);
             return false;
         }
 
@@ -211,13 +218,13 @@ let enrollUser = async (user, bank) => {
 
         // Register the user, enroll the user, and import the new identity into the wallet.
         const secret = await ca.register({
-            affiliation: bank,
-            enrollmentID: user + adminName,
+            affiliation: affiliation,
+            enrollmentID: user + bank,
             role: 'client'
         }, adminUser);
 
         const enrollment = await ca.enroll({
-            enrollmentID: user + adminName,
+            enrollmentID: user + bank,
             enrollmentSecret: secret
         });
         const x509Identity = {
@@ -228,8 +235,8 @@ let enrollUser = async (user, bank) => {
             mspId: mspName,
             type: 'X.509',
         };
-        await wallet.put(user + adminName, x509Identity);
-        console.log(`Successfully registered and enrolled client user "${user + adminName}" and imported it into the wallet`);
+        await wallet.put(user + bank, x509Identity);
+        console.log(`Successfully registered and enrolled client user "${user + bank}" and imported it into the wallet`);
         return true;
 
     } catch (error) {

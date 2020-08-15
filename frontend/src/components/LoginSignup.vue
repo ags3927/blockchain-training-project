@@ -240,6 +240,7 @@ export default {
 				this.signupError = true;
 				return false;
 			}
+			return true;
 		},
 		login() {
 
@@ -252,7 +253,8 @@ export default {
 			}).then(res => {
 
 				this.setSessionToken(res.data.token);
-				this.setSessionToken(res.data.user);
+				this.setSessionDetails(res.data.user);
+				this.setLoggedIn();
 				this.clearLoginDetails();
 				this.clearSignupDetails();
 
@@ -275,12 +277,11 @@ export default {
 			})
 		},
 		signup() {
-
 			if (!this.checkSignupInputs()) return false;
 
 			let baseUrl = this.getServerBaseURL;
 
-			axios.post(baseUrl + '/signup', {
+			axios.post(baseUrl + 'signup', {
 				userObject: this.signupDetails
 			}).then(res => {
 				Toast.fire({

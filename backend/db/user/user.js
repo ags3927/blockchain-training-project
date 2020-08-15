@@ -75,7 +75,7 @@ userSchema.pre('save', function (next) {
 });
 
 
-const User = new mongoose.model('Bank', userSchema);
+const User = new mongoose.model('User', userSchema);
 
 module.exports = { User };
 

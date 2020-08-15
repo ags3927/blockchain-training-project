@@ -83,13 +83,7 @@ const findUserByQuery = async (query, option) => {
 
 const findAllUsers = async () => {
     try {
-        let data = await User.find({}, {
-            __v: 0,
-            _id: 0,
-            name: 1,
-            username: 1,
-            bank: 1
-        });
+        let data = await User.find({}, {password:0});
 
         return {
             data,
