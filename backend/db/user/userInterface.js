@@ -1,6 +1,6 @@
 const { User } = require('./user.js');
 
-let insertUser = async (userObject) => {
+const insertUser = async (userObject) => {
     try {
         let user = new User(userObject);
         let data = await user.save();
@@ -27,7 +27,7 @@ let insertUser = async (userObject) => {
     }
 };
 
-let deleteUser = async (username) => {
+const deleteUser = async (username) => {
     try {
 
         let data = await User.findOneAndDelete({ username });
@@ -55,7 +55,7 @@ let deleteUser = async (username) => {
 };
 
 
-let findUserByQuery = async (query, option) => {
+const findUserByQuery = async (query, option) => {
     try {
         let data = await User.findOne(query, option);
 
@@ -82,7 +82,7 @@ let findUserByQuery = async (query, option) => {
     }
 };
 
-let findUserByIDAndUpdate = async (id, update) => {
+const findUserByIDAndUpdate = async (id, update) => {
     try {
         let data = await User.findByIdAndUpdate(id, update);
 

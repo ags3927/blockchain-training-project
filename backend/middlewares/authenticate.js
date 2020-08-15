@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const userInterface = require('../db/user/userInterface.js');
 
-let handlePOSTLogIn = async (req, res) => {
+const handlePOSTLogIn = async (req, res) => {
     try{
         let userObject = req.body.userObject;
         let username = userObject.username;
@@ -39,7 +39,7 @@ let handlePOSTLogIn = async (req, res) => {
     }
 };
 
-let handleAuthentication = async (req, res, next) => {
+const handleAuthentication = async (req, res, next) => {
     try {
         let token = req.header('x-auth');
         let decodedUser =  await jwt.verify(token,'lekhaporakorejegarighorachoreshey');
@@ -73,7 +73,41 @@ let handleAuthentication = async (req, res, next) => {
     }
 };
 
-let handlePOSTLogOut = async (req, res) => {
+const handleAdminAuthentication = async (req, res, next) => {
+    try {
+        let token = req.header('x-auth');
+        let decodedUser =  await jwt.verify(token,'lekhaporakorejegarighorachoreshey');
+
+        let userData = await userInterface.findUserByQuery({ _id: decodedUser._id }, {
+            username: 1,
+            name: 1,
+            address: 1,
+            contact: 1,
+            bdtTokens: 1,
+            bank: 1
+        });
+
+        let user = userData.data;
+
+        if (user && user.bank === 'CENTRAL-BANK'){
+            res.locals.middlewareResponse = {
+                user,
+                token
+            };
+            return next();
+        } else {
+            return res.status(401).send({
+                message: 'Authentication failed'
+            });
+        }
+    } catch (e) {
+        return res.status(401).send({
+            message: e.message
+        });
+    }
+};
+
+const handlePOSTLogOut = async (req, res) => {
     try {
         let user = res.locals.middlewareResponse.user;
         let token = res.locals.middlewareResponse.token;
@@ -97,5 +131,6 @@ let handlePOSTLogOut = async (req, res) => {
 module.exports = {
     handlePOSTLogIn,
     handleAuthentication,
-    handlePOSTLogOut
+    handlePOSTLogOut,
+    handleAdminAuthentication
 }

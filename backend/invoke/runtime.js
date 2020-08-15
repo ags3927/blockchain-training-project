@@ -24,14 +24,14 @@ function resolveOrganization(bank) {
 }
 
 /**
- * Issuing of a settlement by the payer to the payee
+ * Issuing of a settlement by the payer to the payee.
  * @param {String} payer The payer of this settlement.
  * @param {String} payee The payee of this settlement.
  * @param {String} value The payable value of this settlement.
  * @param {String} bank The bank to which the payer belongs.
  * @returns {JSON} The settlement that has been issued.
  */
-let issueSettlement = async (payer, payee, value, bank) => {
+const issueSettlement = async (payer, payee, value, bank) => {
     try {
         let {orgDir, connectionDir} = resolveOrganization(bank);
 
@@ -65,14 +65,14 @@ let issueSettlement = async (payer, payee, value, bank) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
-        const result = await contract.submitTransaction('issueSettlement', payer, payee, value);
+        const issuedSettlement = await contract.submitTransaction('issueSettlement', payer, payee, value);
         console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            issuedSettlement
         };
 
     } catch (error) {
@@ -84,7 +84,15 @@ let issueSettlement = async (payer, payee, value, bank) => {
     }
 }
 
-let approveSettlement = async (payer, payee, timestamp, bank) => {
+/**
+ * Approval of a settlement by the payee to the payer.
+ * @param {String} payer The payer of this settlement.
+ * @param {String} payee The payee of this settlement.
+ * @param {String} timestamp The timestamp of when the settlement was issued.
+ * @param {String} bank The bank to which the payee belongs.
+ * @returns {JSON} The settlement that has been approved.
+ */
+const approveSettlement = async (payer, payee, timestamp, bank) => {
     try {
         let {orgDir, connectionDir} = resolveOrganization(bank);
 
@@ -118,14 +126,14 @@ let approveSettlement = async (payer, payee, timestamp, bank) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
-        const result = await contract.submitTransaction('approveSettlement', payer, payee, timestamp);
+        const approvedSettlement = await contract.submitTransaction('approveSettlement', payer, payee, timestamp);
         console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            approvedSettlement
         };
 
     } catch (error) {
@@ -139,7 +147,14 @@ let approveSettlement = async (payer, payee, timestamp, bank) => {
 
 }
 
-let finalizeSettlement = async (payer, payee, timestamp) => {
+/**
+ * Finalization of a settlement by the central bank.
+ * @param {String} payer The payer of this settlement.
+ * @param {String} payee The payee of this settlement.
+ * @param {String} timestamp The timestamp of when the settlement was issued.
+ * @returns {JSON} The settlement that has been finalized.
+ */
+const finalizeSettlement = async (payer, payee, timestamp) => {
     try {
 
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations/org3.example.com/connection-org1.json');
@@ -172,14 +187,14 @@ let finalizeSettlement = async (payer, payee, timestamp) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
-        const result = await contract.submitTransaction('finalizeSettlement', payer, payee, timestamp);
+        const finalizedSettlement = await contract.submitTransaction('finalizeSettlement', payer, payee, timestamp);
         console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            finalizedSettlement
         };
 
     } catch (error) {
@@ -193,7 +208,16 @@ let finalizeSettlement = async (payer, payee, timestamp) => {
 
 }
 
-let viewSettlement = async (payer, payee, timestamp, viewer, bank) => {
+/**
+ * View one settlement. Can be called by the payer, payee or the central bank.
+ * @param {String} payer The payer of this settlement.
+ * @param {String} payee The payee of this settlement.
+ * @param {String} timestamp The timestamp of when the settlement was issued.
+ * @param {String} viewer The payer, payee or the central bank.
+ * @param {String} bank The bank of the one issuing the view request.
+ * @returns {JSON} The settlement that has been requested.
+ */
+const viewSettlement = async (payer, payee, timestamp, viewer, bank) => {
     try {
         if (payer !== viewer && payee !== viewer && viewer !== 'central-bank') return {
             status: 'ERROR',
@@ -236,15 +260,15 @@ let viewSettlement = async (payer, payee, timestamp, viewer, bank) => {
         // get the contract from the network.
         const contract = network.getContract('rtgs');
 
-        // submit the specified transaction.
-        const result = await contract.submitTransaction('viewSettlement', payer, payee, timestamp);
+        // evaluate the specified transaction.
+        const settlement = await contract.evaluateTransaction('viewSettlement', payer, payee, timestamp);
         console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            settlement
         };
 
     } catch (error) {
@@ -256,7 +280,15 @@ let viewSettlement = async (payer, payee, timestamp, viewer, bank) => {
     }
 }
 
-let viewAllSettlements = async (payer, payee, viewer, bank) => {
+/**
+ * View all settlements between a payer and a payee. Can be called by the payer, payee or the central bank.
+ * @param {String} payer The payer of this settlement.
+ * @param {String} payee The payee of this settlement.
+ * @param {String} viewer The payer, payee or the central bank.
+ * @param {String} bank The bank of the one issuing the view request.
+ * @returns {JSON} The settlements that have occurred between the payer and the payee.
+ */
+const viewAllSettlements = async (payer, payee, viewer, bank) => {
     try {
         if (payer !== viewer && payee !== viewer && viewer !== 'central-bank') return {
             status: 'ERROR',
@@ -299,15 +331,15 @@ let viewAllSettlements = async (payer, payee, viewer, bank) => {
         // get the contract from the network.
         const contract = network.getContract('rtgs');
 
-        // submit the specified transaction.
-        const result = await contract.submitTransaction('viewAllSettlements', payer, payee);
+        // evaluate the specified transaction.
+        const settlements = await contract.evaluateTransaction('viewAllSettlements', payer, payee);
         console.log(`Transaction has been evaluated. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            settlements
         };
 
     } catch (error) {
@@ -319,8 +351,22 @@ let viewAllSettlements = async (payer, payee, viewer, bank) => {
     }
 }
 
-let cashTransaction = async (transactor, value, bank, transactionType) => {
+/**
+ * A cash deposit or withdrawal complimented by addition or subtraction of equivalent bdtTokens.
+ * @param {String} transactor The one conducting the deposit or withdrawal.
+ * @param {String} value The cash value of the deposit or withdrawal.
+ * @param {String} bank The bank of the transactor.
+ * @param {String} transactionType The transaction type - 'deposit' or 'withdraw'
+ * @returns {JSON} The transaction that was committed.
+ */
+const cashTransaction = async (transactor, value, bank, transactionType) => {
     try {
+        if (transactionType !== 'deposit' && transactionType !== 'withdraw') {
+            return {
+                status: 'ERROR',
+                message: 'Invalid transaction type'
+            }
+        }
         let {orgDir, connectionDir} = resolveOrganization(bank);
 
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations', orgDir, connectionDir);
@@ -357,14 +403,14 @@ let cashTransaction = async (transactor, value, bank, transactionType) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
-        const result = await contract.submitTransaction(transactionType, transactor, value);
+        const cashTransaction = await contract.submitTransaction(transactionType, transactor, value);
         console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            cashTransaction
         };
 
     } catch (error) {
@@ -376,16 +422,25 @@ let cashTransaction = async (transactor, value, bank, transactionType) => {
     }
 }
 
-let viewAllCashTransactions = async (transactor, viewer, bank, transactionType) => {
+/**
+ * View all cash transactions made by a transactor.
+ * @param {String} transactor The one whose transactions are being viewed.
+ * @param {String} bank The bank of the transactor.
+ * @param {String} transactionType The transaction type - 'deposit' or 'withdraw'
+ * @returns {JSON} The transaction that was committed.
+ */
+const viewAllCashTransactions = async (transactor, bank, transactionType) => {
+
+    if (transactionType !== 'deposit' && transactionType !== 'withdraw') {
+        return {
+            status: 'ERRPR',
+            message: 'Invalid transaction type'
+        }
+    }
 
     let transactionName = (transactionType === 'deposit') ? 'viewAllDeposits' : 'viewAllWithdrawals';
 
     try {
-        if (transactor !== viewer) return {
-            status: 'ERROR',
-            message: 'You are not authorized view this transaction'
-        };
-
         let {orgDir, connectionDir} = resolveOrganization(bank);
 
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations', orgDir, connectionDir);
@@ -397,19 +452,19 @@ let viewAllCashTransactions = async (transactor, viewer, bank, transactionType) 
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
-        const identity = await wallet.get(viewer + bank);
+        const identity = await wallet.get(transactor + bank);
 
         if (!identity) {
-            console.log(`An identity for the user ${viewer + bank} does not exist in the wallet`);
+            console.log(`An identity for the user ${transactor + bank} does not exist in the wallet`);
             return {
                 status: 'ERROR',
-                message: `An identity for the user ${viewer + bank} does not exist in the wallet`
+                message: `An identity for the user ${transactor + bank} does not exist in the wallet`
             };
         }
 
         // create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccp, {wallet, identity: viewer + bank, discovery: {enabled: true, asLocalhost: true}});
+        await gateway.connect(ccp, {wallet, identity: transactor + bank, discovery: {enabled: true, asLocalhost: true}});
 
         // get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('mychannel');
@@ -418,14 +473,14 @@ let viewAllCashTransactions = async (transactor, viewer, bank, transactionType) 
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
-        const result = await contract.submitTransaction(transactionName, transactor);
+        const cashTransactions = await contract.submitTransaction(transactionName, transactor);
         console.log(`Transaction has been submitted. Result is: ${result.toString()}`);
 
         await gateway.disconnect();
 
         return {
             status: 'OK',
-            result
+            cashTransactions
         };
 
     } catch (error) {

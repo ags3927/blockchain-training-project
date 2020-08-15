@@ -19,4 +19,19 @@ router.post('/userdetails',
     userController.handleGETUserDetails
 );
 
+router.post('/issuesettlement',
+    authenticate.handleAuthentication,
+    userController.handlePOSTIssueSettlement
+);
+
+router.post('/approvesettlement',
+    authenticate.handleAuthentication,
+    userController.handlePOSTApproveSettlement
+);
+
+router.post('/finalizesettlement',
+    authenticate.handleAdminAuthentication,
+    userController.handlePOSTFinalizeSettlement
+);
+
 module.exports = router;
