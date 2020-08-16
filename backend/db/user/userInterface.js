@@ -57,7 +57,7 @@ const deleteUser = async (username) => {
 const findUserByQuery = async (query, option) => {
     try {
         let data = await User.findOne(query, option);
-
+        console.log(data);
         if (data){
             return {
                 data,

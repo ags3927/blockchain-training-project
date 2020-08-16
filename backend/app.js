@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV || 'development';
 
 console.log(env);
 
-process.env.MONGODB_URI = 'mongodb+srv://admin:test1234@cluster0.8uldc.gcp.mongodb.net/Cluster0?retryWrites=true&w=majority';
+// process.env.MONGODB_URI = 'mongodb+srv://admin:test1234@cluster0.8uldc.gcp.mongodb.net/Cluster0?retryWrites=true&w=majority';
 process.env.MONGODB_URI = 'mongodb://localhost:27017/rtgs';
 
 

@@ -1,27 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/user/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/user/userInterface.js" beforeDir="false" afterPath="$PROJECT_DIR$/db/user/userInterface.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoke/initial.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/initial.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/invoke/runtime.js" beforeDir="false" afterPath="$PROJECT_DIR$/invoke/runtime.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet/ags3927BANK-001.id" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet/agsBANK-001.id" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet/bank-001.id" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet/bank-002.id" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet/central-bank.id" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wallet/tasinBANK-002.id" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chaincode/lib/cashTransaction.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chaincode/lib/cashTransaction.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chaincode/lib/contract.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chaincode/lib/contract.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../chaincode/lib/settlement.js" beforeDir="false" afterPath="$PROJECT_DIR$/../chaincode/lib/settlement.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/Home.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/LoginSignup.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/LoginSignup.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/store/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/store/store.js" afterDir="false" />
-    </list>
+    <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +42,7 @@
       <updated>1597411426661</updated>
       <workItem from="1597411427733" duration="47713000" />
       <workItem from="1597546510497" duration="7000" />
-      <workItem from="1597560145422" duration="15637000" />
+      <workItem from="1597560145422" duration="15736000" />
     </task>
     <servers />
   </component>

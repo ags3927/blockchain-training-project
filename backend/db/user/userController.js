@@ -1,6 +1,7 @@
 const userInterface = require('./userInterface.js');
 const initial = require('../../invoke/initial.js');
 const runtime = require('../../invoke/runtime.js');
+const user = require('./user.js');
 
 const handleGETSessionDetails = async (req, res) => {
     try {
@@ -138,20 +139,24 @@ const handlePOSTFinalizeSettlement = async (req, res) => {
         let result = await runtime.finalizeSettlement(payer, payee, timestamp);
 
         if (result.status === 'OK') {
-
-
-            let payeeUser = await userInterface.findUserByQuery({username: payee}, {});
-
-            console.log(payeeUser.bdtTokens);
-
-            let updatedValue = parseInt(payeeUser.bdtTokens.toString()) + parseInt(result.finalizedSettlement.value.toString());
-
-            console.log('UPDATED VALUE = ' + updatedValue);
-
-            await payeeUser.updateOne({
-                bdtTokens: updatedValue
+            
+            let queryResult = await userInterface.findUserByQuery({ username: payee }, {
+                bdtTokens: 1
             });
 
+            let payeeUser = queryResult.data;
+            console.log('PAYEE BEFORE CHANGE = ' + payeeUser);
+
+            console.log('FINALIZED SETTLEMENT = ' + JSON.parse(result.finalizedSettlement));
+
+            let updatedValue = parseInt(payeeUser.bdtTokens.toString()) + parseInt(JSON.parse(result.finalizedSettlement).value.toString());
+            
+            payeeUser.bdtTokens = updatedValue;
+
+            console.log('PAYEE AFTER CHANGE = ' + payeeUser);
+
+            await payeeUser.save();
+            
             return res.status(200).send({
                 message: 'Settlement finalized successfully',
                 finalizedSettlement: result.finalizedSettlement
@@ -163,6 +168,7 @@ const handlePOSTFinalizeSettlement = async (req, res) => {
         }
 
     } catch (e) {
+        console.log(e);
         return res.status(400).send({
             status: 'ERROR',
             message: e.message
