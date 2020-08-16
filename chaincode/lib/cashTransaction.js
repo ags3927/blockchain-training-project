@@ -27,6 +27,10 @@ class CashTransaction {
     getType() {
         return this.type;
     }
+
+    static deserialize(data) {
+        return new CashTransaction(data.transactor, data.timestamp, data.value, data.type);
+    }
 }
 
 module.exports = CashTransaction;

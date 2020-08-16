@@ -126,6 +126,10 @@ const approveSettlement = async (payer, payee, timestamp, bank) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
+        console.log('Approve Settlement Method: ');
+        console.log('Payee = ' + payee);
+        console.log('Payer = ' + payer);
+        console.log('Timestamp = ' + timestamp.toString());
         const approvedSettlement = await contract.submitTransaction('approveSettlement', payer, payee, timestamp);
         console.log(`Transaction has been submitted. Result is: ${approvedSettlement.toString()}`);
 
@@ -157,7 +161,7 @@ const approveSettlement = async (payer, payee, timestamp, bank) => {
 const finalizeSettlement = async (payer, payee, timestamp) => {
     try {
 
-        const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations/org3.example.com/connection-org1.json');
+        const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations/org3.example.com/connection-org3.json');
         ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
         // Create a new file system based wallet for managing identities.
@@ -368,13 +372,13 @@ const viewAllSettlements = async (viewer, bank) => {
         // Create a new file system based wallet for managing identities.
         const walletPath = path.join(process.cwd(), 'wallet');
         wallet = await Wallets.newFileSystemWallet(walletPath);
+
         console.log(`Wallet path: ${walletPath}`);
 
         let identityKey;
 
         // Check to see if we've already enrolled the user.
-        if (bank === 'CENTRAL-BANK') identityKey = viewer;
-        else identityKey = viewer + bank;
+        identityKey = viewer + bank;
 
         const identity = await wallet.get(identityKey);
 
@@ -402,24 +406,22 @@ const viewAllSettlements = async (viewer, bank) => {
 
         await gateway.disconnect();
 
-        if (viewer === 'central-bank') {
+        if (bank === 'CENTRAL-BANK') {
             return {
                 status: 'OK',
-                settlements
+                settlements: JSON.parse(settlements.toString())
             };
         }
 
-        let filteredSettlements = [];
+        let filteredSettlements = JSON.parse(settlements.toString()).filter(settlement => {
+            return (settlement.payer === viewer || settlement.payee === viewer);
+        });
 
-        for (const settlement of settlements) {
-            if (settlement.payer === viewer || settlement.payee === viewer) {
-                filteredSettlements.push(settlement);
-            }
-        }
+        // console.log(filteredSettlements);
 
         return {
             status: 'OK',
-            filteredSettlements
+            settlements: filteredSettlements
         };
 
     } catch (error) {
@@ -483,10 +485,10 @@ const cashTransaction = async (transactor, value, bank, transactionType) => {
         const contract = network.getContract('rtgs');
 
         // submit the specified transaction.
-        console.log('JUST BEFORE TRANSACTION');
-        console.log(transactionType);
-        console.log(transactor);
-        console.log(value);
+        // console.log('JUST BEFORE TRANSACTION');
+        // console.log(transactionType);
+        // console.log(transactor);
+        // console.log(value);
         const cashTransaction = await contract.submitTransaction(transactionType, transactor, value);
         console.log(`Transaction has been submitted. Result is: ${cashTransaction.toString()}`);
 

@@ -63,6 +63,19 @@ class Settlement {
     setIsApproved() {
         this.isApproved = true;
     }
+
+    static deserialize(data) {
+        let smnt = new Settlement(data.payer, data.payee, data.issueTimestamp, data.value);
+        if (data.isApproved) {
+            smnt.setIsApproved();
+            smnt.setApprovalTimestamp(data.approvalTimestamp);
+        }
+        if (data.isFinalized) {
+            smnt.setIsFinalized();
+            smnt.setFinalizationTimestamp(data.finalizationTimestamp);
+        }
+        return smnt;
+    }
 }
 
 module.exports = Settlement;

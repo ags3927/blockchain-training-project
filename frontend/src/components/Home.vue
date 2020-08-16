@@ -25,7 +25,7 @@
 
 				<hr class="my-3">
 
-				<div class="row mb-4">
+				<div class="row mb-4" v-if="getSessionDetails.bank !== 'CENTRAL-BANK'">
 					<div class="col-12 col-lg-6 text-left">
 						<h5 class="px-5 my-2">
 							<span class="font-weight-bold">
@@ -61,10 +61,24 @@
 						</h5>
 					</div>
 				</div>
+				<div class="row mb-4" v-if="getSessionDetails.bank === 'CENTRAL-BANK'">
+					<div class="col-12">
+						<h5 class="px-5 my-2">
+							<span class="font-weight-bold">
+								Name:
+							</span>
+							CENTRAL BANK
+						</h5>
+
+					</div>
+
+				</div>
 
 			</div>
 
-			<div id="settlements" class="card my-card-border mt-5 text-left">
+			<div id="settlements"
+				 class="card my-card-border mt-5 text-left"
+				 v-if="getSessionDetails.bank !== 'CENTRAL-BANK'">
 
 				<div class="row">
 					<div class="col text-left">
@@ -101,7 +115,9 @@
 
 						<div class="col-6 col-lg-4 text-left pt-2">
 							<h4>
-								<span class="font-weight-bold">Date Issued: </span>{{ getFormattedDate(settlement.issueTimestamp) }}
+								<span class="font-weight-bold">Date Issued: </span>{{
+									getFormattedDate(settlement.issueTimestamp)
+								}}
 							</h4>
 						</div>
 
@@ -111,31 +127,105 @@
 							</h4>
 						</div>
 
-						<div class="col-6 col-lg-2 text-right" v-if="!settlement.isApproved">
+						<div class="col-6 col-lg-2 text-right"
+							 v-if="!settlement.isApproved && getSessionDetails.username === settlement.payee">
 							<button @click="approveSettlement(index)" class="btn btn-info">
 								Approve
 							</button>
 						</div>
 
-						<div class="col-6 col-lg-2 text-right"
-							 v-if="settlement.isApproved && !settlement.isFinalized &&
-							 this.getSessionDetails.bank === 'CENTRAL-BANK'">
-							<button @click="finalizeSettlement(index)" class="btn btn-info">
-								Finalize
-							</button>
+						<div class="col-6 col-lg-2 text-left text-warning"
+							 v-if="settlement.isApproved && !settlement.isFinalized">
+							<h4 class="pt-2">
+								<span class="font-weight-bold">Approved</span>
+							</h4>
 						</div>
 
 						<div class="col-6 col-lg-2 text-left text-success"
 							 v-if="settlement.isApproved && settlement.isFinalized">
-							Finalized
+							<h4 class="pt-2">
+								<span class="font-weight-bold">Finalized</span>
+							</h4>
 						</div>
 					</div>
 				</div>
 
 			</div>
 
-			<div id="transactions" class="card my-card-border mt-5 text-left">
+			<div id="admin-settlements"
+				 v-if="getSessionDetails.bank === 'CENTRAL-BANK'"
+				 class="card my-card-border mt-5 text-left">
 
+				<div class="row">
+					<div class="col text-left">
+						<h3 class="mt-4 px-5 font-weight-bold">Settlements</h3>
+					</div>
+					<div class="col text-right">
+						<button
+							@click="fetchSettlements"
+							class="mt-4 px-4 mr-5 btn btn-info">
+							Refresh
+						</button>
+					</div>
+				</div>
+
+				<hr class="my-3">
+
+				<div v-for="(settlement, index) in settlements"
+					 class="card my-card-border m-3 text-left py-3 px-3">
+					<div class="row">
+						<div class="col-6 text-left pt-2">
+							<h4>
+								<span class="font-weight-bold">
+									Payer:
+								</span> {{ settlement.payer }}
+							</h4>
+
+						</div>
+						<div class="col-6 text-left pt-2">
+							<h4>
+								<span class="font-weight-bold">
+									Payee:
+								</span> {{ settlement.payee }}
+							</h4>
+
+						</div>
+
+						<div class="col-6 text-left pt-2">
+							<h4>
+								<span class="font-weight-bold">Date: </span>{{
+									getFormattedDate(settlement.issueTimestamp)
+								}}
+							</h4>
+						</div>
+
+						<div class="col-6 text-left pt-2">
+							<h4>
+								<span class="font-weight-bold">Value: </span>{{ settlement.value }}
+							</h4>
+						</div>
+
+						<div class="col-12"
+							 v-if="settlement.isApproved && !settlement.isFinalized && getSessionDetails.bank === 'CENTRAL-BANK'">
+							<button @click="finalizeSettlement(index)" class="btn btn-info w-25">
+								Finalize
+							</button>
+						</div>
+
+						<div class="col-12 ext-left text-success"
+							 v-if="settlement.isApproved && settlement.isFinalized">
+							<h4 class="pt-2">
+								<span class="font-weight-bold">Finalized</span>
+							</h4>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div id="transactions"
+				 v-if="getSessionDetails.bank !== 'CENTRAL-BANK'"
+				 class="card my-card-border mt-5 text-left">
 				<div class="row">
 					<div class="col text-left">
 						<h3 class="mt-4 px-5 font-weight-bold">Cash Transactions</h3>
@@ -181,7 +271,9 @@
 				</div>
 			</div>
 
-			<div id="issue-settlement" class="card my-card-border mt-5 text-left">
+			<div id="issue-settlement"
+				 v-if="getSessionDetails.bank !== 'CENTRAL-BANK'"
+				 class="card my-card-border mt-5 text-left">
 
 				<h3 class="mt-4 px-5 font-weight-bold">Issue New Settlement</h3>
 				<hr class="my-3">
@@ -215,7 +307,7 @@
 						</button>
 					</div>
 				</div>
-				<div class="row" >
+				<div class="row">
 					<div class="col-12 text-left"
 						 v-if="errorFlags.settlementPayee">
 						<p class="pl-5 text-danger">
@@ -231,7 +323,9 @@
 				</div>
 			</div>
 
-			<div id="issue-transaction" class="card my-card-border mt-5 text-left">
+			<div id="issue-transaction"
+				 v-if="getSessionDetails.bank !== 'CENTRAL-BANK'"
+				 class="card my-card-border mt-5 text-left">
 
 				<h3 class="mt-4 px-5 font-weight-bold">Issue New Cash Transaction</h3>
 				<hr class="my-3">
@@ -265,7 +359,7 @@
 						</button>
 					</div>
 				</div>
-				<div class="row" >
+				<div class="row">
 					<div class="col-12 text-left"
 						 v-if="errorFlags.transactionType">
 						<p class="pl-5 text-danger">
@@ -451,7 +545,7 @@ export default {
 		approveSettlement(index) {
 			let baseURL = this.getServerBaseURL;
 			let sessionToken = this.getSessionToken;
-
+			console.log(this.settlements[index]);
 			axios.post(baseURL + 'approvesettlement', {
 				settlementObject: {
 					payer: this.settlements[index].payer,
@@ -514,6 +608,7 @@ export default {
 					'x-auth': sessionToken
 				}
 			}).then(res => {
+				console.log(res.data.settlements);
 				this.settlements = res.data.settlements;
 			}).catch(err => {
 				console.log(err);
@@ -547,8 +642,8 @@ export default {
 				let responseData = res.data.users;
 				console.log(responseData);
 				this.users = [];
-				for (let i=0; i<responseData.length; i++) {
-					if (this.getSessionDetails.username !== responseData[i].username) {
+				for (let i = 0; i < responseData.length; i++) {
+					if (this.getSessionDetails.username !== responseData[i].username && responseData[i].bank !== 'CENTRAL-BANK') {
 						this.users.push(responseData[i]);
 					}
 				}

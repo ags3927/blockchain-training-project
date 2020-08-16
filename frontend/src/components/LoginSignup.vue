@@ -194,7 +194,8 @@ export default {
 			tabControl: true,
 			banks: [
 				'BANK-001',
-				'BANK-002'
+				'BANK-002',
+				'CENTRAL-BANK'
 			],
 			loginError: false,
 			signupError: false

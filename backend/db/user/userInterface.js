@@ -126,10 +126,38 @@ const findUserByIDAndUpdate = async (id, update) => {
     }
 };
 
+const findOneUser = async (id) => {
+    try {
+        let data = await User.findOne(id);
+
+        if (data){
+            return {
+                data,
+                message: 'User Fetched Successfully',
+                status: 'OK'
+            }
+        } else {
+            return {
+                data: null,
+                message: 'User Fetch Failed',
+                status: 'ERROR'
+            };
+        }
+
+    } catch (e) {
+        return {
+            data: null,
+            message: e.message,
+            status: 'ERROR'
+        };
+    }
+};
+
 module.exports = {
     insertUser,
     deleteUser,
     findUserByIDAndUpdate,
     findUserByQuery,
-    findAllUsers
+    findAllUsers,
+    findOneUser
 }

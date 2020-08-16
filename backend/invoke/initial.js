@@ -29,10 +29,10 @@ let enrollCentralBank = async () => {
                 message: 'An identity for the admin user "central-bank" already exists in the wallet.'
             };
         }
-        console.log('WAT');
+        // console.log('WAT');
         // Enroll the admin user, and import the new identity into the wallet.
         const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'adminpw' });
-        console.log('WAT2');
+        // console.log('WAT2');
         const x509Identity = {
             credentials: {
                 certificate: enrollment.certificate,
@@ -177,13 +177,20 @@ let enrollUser = async (user, bank) => {
             adminName = 'bank-001';
             mspName = 'Org1MSP';
             affiliation = 'org1.department1';
-        } else {
+        } else if (bank === 'BANK-002') {
             orgDir = 'org2.example.com';
             connectionDir = 'connection-org2.json';
             caAuthority = 'ca.org2.example.com';
             adminName = 'bank-002';
             mspName = 'Org2MSP';
             affiliation = 'org2.department1';
+        } else {
+            orgDir = 'org3.example.com';
+            connectionDir = 'connection-org3.json';
+            caAuthority = 'ca.org3.example.com';
+            adminName = 'central-bank';
+            mspName = 'Org3MSP';
+            affiliation = 'org3.department1';
         }
 
         const ccpPath = path.resolve('/home/ags/Projects/fabric-samples/test-network/organizations/peerOrganizations', orgDir, connectionDir);
@@ -218,7 +225,6 @@ let enrollUser = async (user, bank) => {
 
         // Register the user, enroll the user, and import the new identity into the wallet.
         const secret = await ca.register({
-            affiliation: affiliation,
             enrollmentID: user + bank,
             role: 'client'
         }, adminUser);

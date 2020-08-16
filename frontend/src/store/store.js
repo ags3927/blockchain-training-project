@@ -15,7 +15,7 @@ export const store = new Vuex.Store({
 			bdtTokens: 1100
 		},
 		sessionToken: '',
-		serverBaseURL: 'http://localhost:3000/api/',
+		serverBaseURL: 'http://localhost:3001/api/',
 	},
 	getters: {
 		getSessionToken: state => {

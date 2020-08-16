@@ -61,12 +61,13 @@ const handlePOSTRegister = async (req, res) => {
 const handlePOSTIssueSettlement = async (req, res) => {
     try {
         let settlementObject = req.body.settlementObject;
-        let payer = res.locals.middlewareResponse.user.username;
+        let user = res.locals.middlewareResponse.user;
+        let payer = user.username;
         let payee = settlementObject.payee;
         let value = settlementObject.value;
-        let bank = res.locals.middlewareResponse.user.bank;
+        let bank = user.bank;
 
-        if (value > res.locals.middlewareResponse.user.bdtTokens) {
+        if (value > user.bdtTokens) {
             return res.status(400).send({
                 message: 'Insufficient Funds'
             });
@@ -75,6 +76,11 @@ const handlePOSTIssueSettlement = async (req, res) => {
         let result = await runtime.issueSettlement(payer, payee, value, bank);
 
         if (result.status === 'OK') {
+
+            await userInterface.findUserByIDAndUpdate(user._id, {
+                bdtTokens: parseInt(user.bdtTokens.toString()) - parseInt(value.toString())
+            });
+
             return res.status(200).send({
                 message: 'Settlement issued successfully',
                 issuedSettlement: result.issuedSettlement
@@ -132,6 +138,20 @@ const handlePOSTFinalizeSettlement = async (req, res) => {
         let result = await runtime.finalizeSettlement(payer, payee, timestamp);
 
         if (result.status === 'OK') {
+
+
+            let payeeUser = await userInterface.findUserByQuery({username: payee}, {});
+
+            console.log(payeeUser.bdtTokens);
+
+            let updatedValue = parseInt(payeeUser.bdtTokens.toString()) + parseInt(result.finalizedSettlement.value.toString());
+
+            console.log('UPDATED VALUE = ' + updatedValue);
+
+            await payeeUser.updateOne({
+                bdtTokens: updatedValue
+            });
+
             return res.status(200).send({
                 message: 'Settlement finalized successfully',
                 finalizedSettlement: result.finalizedSettlement
@@ -216,7 +236,10 @@ const handlePOSTViewAllSettlements = async (req, res) => {
 
         let result = await runtime.viewAllSettlements(viewer, bank);
 
+        // console.log(result.settlements);
+
         if (result.status === 'OK') {
+            // console.log('SUCCESS')
             return res.status(200).send({
                 message: 'Settlements fetched successfully',
                 settlements: result.settlements
@@ -238,19 +261,28 @@ const handlePOSTViewAllSettlements = async (req, res) => {
 const handlePOSTCashTransaction = async (req, res) => {
     try {
         let transactionObject = req.body.transactionObject;
-        console.log(transactionObject);
-
-        let transactor = res.locals.middlewareResponse.user.username;
+        // console.log(transactionObject);
+        let user = res.locals.middlewareResponse.user;
+        let transactor = user.username;
         let value = transactionObject.value;
-        let bank = res.locals.middlewareResponse.user.bank;
+        let bank = user.bank;
         let transactionType = transactionObject.transactionType;
-        console.log(transactor);
-        console.log(value);
-        console.log(bank);
+
+        if (transactionType === 'withdraw' && value > user.bdtTokens) {
+            return res.status(400).send({
+                message: 'Insufficient funds to withdraw'
+            });
+        }
 
         let result = await runtime.cashTransaction(transactor, value, bank, transactionType);
 
         if (result.status === 'OK') {
+            let updatedValue = transactionType === 'deposit' ? parseInt(user.bdtTokens.toString()) + parseInt(value.toString()) : parseInt(user.bdtTokens.toString()) - parseInt(value.toString());
+
+            console.log(updatedValue);
+            await userInterface.findUserByIDAndUpdate(user._id, {
+                bdtTokens: updatedValue
+            });
             return res.status(200).send({
                 message: 'Cash transaction committed successfully',
                 cashTransaction: result.cashTransaction
@@ -278,19 +310,12 @@ const handlePOSTViewAllCashTransactions = async (req, res) => {
         // console.log('Deposits Queried');
         let resultWithdrawals = await runtime.viewAllCashTransactions(transactor, bank, 'withdraw');
         // console.log('Withdrawals Queried');
+        let deposits = JSON.parse(resultDeposits.cashTransactions.toString());
+        let withdrawals = JSON.parse(resultWithdrawals.cashTransactions.toString());
 
-        let cashTransactions = [];
-        if (resultDeposits.length > 0) {
-            for (const data of resultDeposits.cashTransactions) {
-                cashTransactions.push(data);
-            }
-        }
+        let cashTransactions = [...deposits, ...withdrawals];
 
-        if (resultWithdrawals.length > 0) {
-            for (const data of resultWithdrawals.cashTransactions) {
-                cashTransactions.push(data);
-            }
-        }
+        console.log(cashTransactions);
 
         if (resultDeposits.status === 'OK' && resultWithdrawals.status === 'OK') {
             // console.log('Successful');

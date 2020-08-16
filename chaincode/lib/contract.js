@@ -34,10 +34,10 @@ class RTGSContract extends Contract {
         let timestamp = new Date();
 
         // Create a composite key 'SM{payer}{payee}{timestamp}' for this settlement.
-        let key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        let key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp.toString()]);
 
         // Create a new settlement object with the input data.
-        const settlement = new Settlement(payer, payee, timestamp, value);
+        const settlement = new Settlement(payer, payee, timestamp.toString(), value);
 
         // Save the settlement in the datastore.
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(settlement)));
@@ -55,7 +55,7 @@ class RTGSContract extends Contract {
     async approveSettlement(ctx, payer, payee, timestamp) {
 
         // Retrieve the settlement from the store based on its payer, payee and timestamp.
-        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp.toString()]);
         const settlementAsBytes = await ctx.stub.getState(key);
 
         // Check whether the corresponding data in the data store exists.
@@ -64,7 +64,7 @@ class RTGSContract extends Contract {
         }
 
         // Deserialize the document into a settlement object.
-        const settlement = new Settlement(JSON.parse(settlementAsBytes.toString()));
+        const settlement = Settlement.deserialize(JSON.parse(settlementAsBytes.toString()));
 
         // Check whether the settlement has already been approved.
         if (settlement.getIsApproved()) {
@@ -90,7 +90,7 @@ class RTGSContract extends Contract {
     async finalizeSettlement(ctx, payer, payee, timestamp) {
 
         // Retrieve the settlement from the store based on its payer, payee and timestamp.
-        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp.toString()]);
         const settlementAsBytes = await ctx.stub.getState(key);
 
         // Check whether the corresponding data in the data store exists.
@@ -99,7 +99,7 @@ class RTGSContract extends Contract {
         }
 
         // Deserialize the document into a settlement object.
-        const settlement = new Settlement(JSON.parse(settlementAsBytes.toString()));
+        const settlement = Settlement.deserialize(JSON.parse(settlementAsBytes.toString()));
 
         // Check whether the settlement has already been finalized.
         if (settlement.getIsFinalized()) {
@@ -125,7 +125,7 @@ class RTGSContract extends Contract {
     async viewSettlement(ctx, payer, payee, timestamp) {
 
         // Retrieve the settlement from the store based on its payer, payee and timestamp.
-        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp]);
+        const key = ctx.stub.createCompositeKey('SM', [payer, payee, timestamp.toString()]);
         const settlementAsBytes = await ctx.stub.getState(key);
 
         // Check whether the corresponding data in the data store exists.
@@ -134,7 +134,7 @@ class RTGSContract extends Contract {
         }
 
         // Return the settlement information.
-        return settlementAsBytes.toString();
+        return Settlement.deserialize(JSON.parse(settlementAsBytes.toString()));
     }
 
     /**
@@ -149,7 +149,7 @@ class RTGSContract extends Contract {
         for await (const result of ctx.stub.getStateByPartialCompositeKey('SM', [payer, payee])) {
             const strValue = Buffer.from(result.value).toString('utf8');
             try {
-                let settlement = new Settlement(JSON.parse(strValue));
+                let settlement = Settlement.deserialize(JSON.parse(strValue));
                 settlements.push(settlement);
             } catch (error) {
                 throw error;
@@ -169,7 +169,7 @@ class RTGSContract extends Contract {
         for await (const result of ctx.stub.getStateByPartialCompositeKey('SM',[])) {
             const strValue = Buffer.from(result.value).toString('utf8');
             try {
-                let settlement = new Settlement(JSON.parse(strValue));
+                let settlement = Settlement.deserialize(JSON.parse(strValue));
                 settlements.push(settlement);
             } catch (error) {
                 throw error;
@@ -189,7 +189,7 @@ class RTGSContract extends Contract {
         let timestamp = new Date();
 
         // Create a composite key 'DP{depositor}{timestamp}' for this cash transaction.
-        let key = ctx.stub.createCompositeKey('DP', [depositor, timestamp]);
+        let key = ctx.stub.createCompositeKey('DP', [depositor, timestamp.toString()]);
 
         // Create a new cash transaction object with the input data.
         const deposit = new CashTransaction(depositor.toString(), timestamp.toString(), value.toString(), 'deposit');
@@ -212,7 +212,7 @@ class RTGSContract extends Contract {
         for await (const result of ctx.stub.getStateByPartialCompositeKey('DP', [depositor])) {
             const strValue = Buffer.from(result.value).toString('utf8');
             try {
-                let deposit = new Settlement(JSON.parse(strValue));
+                let deposit = CashTransaction.deserialize(JSON.parse(strValue));
                 deposits.push(deposit);
             } catch (error) {
                 throw error;
@@ -232,7 +232,7 @@ class RTGSContract extends Contract {
         let timestamp = new Date();
 
         // Create a composite key 'DP{depositor}{timestamp}' for this cash transaction.
-        let key = ctx.stub.createCompositeKey('WD', [withdrawer, timestamp]);
+        let key = ctx.stub.createCompositeKey('WD', [withdrawer, timestamp.toString()]);
 
         // Create a new cash transaction object with the input data.
         const withdraw = new CashTransaction(withdrawer, timestamp, value, 'withdraw');
@@ -255,7 +255,7 @@ class RTGSContract extends Contract {
         for await (const result of ctx.stub.getStateByPartialCompositeKey('WD', [withdrawer])) {
             const strValue = Buffer.from(result.value).toString('utf8');
             try {
-                let withdrawal = new Settlement(JSON.parse(strValue));
+                let withdrawal = CashTransaction.deserialize(JSON.parse(strValue));
                 withdrawals.push(withdrawal);
             } catch (error) {
                 throw error;
