@@ -4,20 +4,20 @@
 			<div id="profile" class="card my-card-border mt-5 text-left">
 
 				<div class="row">
-					<div class="col-8 text-left">
-						<h3 class="mt-4 px-5 font-weight-bold">Profile</h3>
+					<div class="col-7 text-left">
+						<h3 class="mt-4 pl-5 font-weight-bold">Profile</h3>
 					</div>
-					<div class="col-2 text-right">
+					<div class="col-2 ml-auto text-right">
 						<button
 							@click="refresh"
-							class="mt-4 px-4 mr-5 btn btn-info">
+							class="mt-4 btn btn-info">
 							Refresh
 						</button>
 					</div>
-					<div class="col-2 text-right">
+					<div class="col-2 mr-auto text-right">
 						<button
 							@click="logout"
-							class="mt-4 px-4 mr-5 btn btn-danger">
+							class="mt-4 btn btn-danger">
 							Logout
 						</button>
 					</div>
@@ -279,27 +279,29 @@
 				<hr class="my-3">
 
 				<div class="row my-3">
-					<div class="col-6 col-lg-2 pt-2 text-left">
+					<div class="col-4 pt-2 ml-auto">
 						<h4 class="pl-5 font-weight-bold">Payee:</h4>
 					</div>
-					<div class="col-6 col-lg-2 text-left">
+					<div class="col-8 text-left mr-auto">
 						<b-form-select
-							:class="{'border-danger':errorFlags.settlementPayee}"
-							v-model="settlementDetails.payee"
-							:options="getUsernames">
+							class="w-75"
+							:class="{'border-danger':errorFlags.transactionType}"
+							v-model="transactionDetails.transactionType"
+							:options="['deposit','withdraw']">
 						</b-form-select>
 					</div>
-					<div class="col-6 col-lg-2 pt-2 text-left">
+					<div class="col-4 pt-2 ml-auto">
 						<h4 class="pl-5 font-weight-bold">Amount:</h4>
 					</div>
-					<div class="col-6 col-lg-2 text-left">
+					<div class="col-8 text-left mr-auto">
 						<b-form-input
+							class="w-75"
 							type="number"
 							:class="{'border-danger':errorFlags.settlementAmount}"
 							v-model="settlementDetails.value">
 						</b-form-input>
 					</div>
-					<div class="col-12 col-lg-4 text-right">
+					<div class="col-12 mx-auto">
 						<button
 							@click="issueSettlement"
 							class="btn btn-success px-4 mr-5">
@@ -331,29 +333,31 @@
 				<hr class="my-3">
 
 				<div class="row my-3">
-					<div class="col-6 col-lg-2 pt-2 text-left">
+					<div class="col-4 pt-2 ml-auto">
 						<h4 class="pl-5 font-weight-bold">Type:</h4>
 					</div>
-					<div class="col-6 col-lg-2 text-left">
+					<div class="col-8 text-left mr-auto">
 						<b-form-select
-							:class="{'border-danger':errorFlags.transactionType}"
-							v-model="transactionDetails.transactionType"
-							:options="['deposit','withdraw']">
+							class="w-75"
+							:class="{'border-danger':errorFlags.settlementPayee}"
+							v-model="settlementDetails.payee"
+							:options="getUsernames">
 						</b-form-select>
 					</div>
-					<div class="col-6 col-lg-2 pt-2 text-left">
+					<div class="col-4 pt-2 ml-auto">
 						<h4 class="pl-5 font-weight-bold">Amount:</h4>
 					</div>
-					<div class="col-6 col-lg-2 text-left">
+					<div class="col-8 text-left mr-auto">
 						<b-form-input
+							class="w-75"
 							type="number"
 							:class="{'border-danger':errorFlags.transactionAmount}"
-							v-model="transactionDetails.value"
-						></b-form-input>
+							v-model="transactionDetails.value">
+						</b-form-input>
 					</div>
-					<div class="col-12 col-lg-4 text-right">
+					<div class="col-12 mx-auto">
 						<button
-							@click="issueTransaction"
+							@click="issueSettlement"
 							class="btn btn-success px-4 mr-5">
 							Issue
 						</button>
@@ -361,19 +365,20 @@
 				</div>
 				<div class="row">
 					<div class="col-12 text-left"
-						 v-if="errorFlags.transactionType">
+						 v-if="errorFlags.settlementPayee">
 						<p class="pl-5 text-danger">
-							You need to select a transaction type.
+							You need to select a payee.
 						</p>
 					</div>
 					<div class="col-12 text-left"
-						 v-if="errorFlags.transactionAmount">
+						 v-if="errorFlags.settlementAmount">
 						<p class="pl-5 text-danger">
-							You need to enter amount you wish to deposit or withdraw.
+							You need to enter amount you wish to transfer.
 						</p>
 					</div>
 				</div>
 			</div>
+
 		</section>
 	</div>
 </template>

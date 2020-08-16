@@ -3,7 +3,10 @@ const env = process.env.NODE_ENV || 'development';
 console.log(env);
 
 // process.env.MONGODB_URI = 'mongodb+srv://admin:test1234@cluster0.8uldc.gcp.mongodb.net/Cluster0?retryWrites=true&w=majority';
-process.env.MONGODB_URI = 'mongodb://localhost:27017/rtgs';
+
+process.env.MONGODB_URI = 'mongodb://admin:test1234@cluster0-shard-00-00.8uldc.gcp.mongodb.net:27017,cluster0-shard-00-01.8uldc.gcp.mongodb.net:27017,cluster0-shard-00-02.8uldc.gcp.mongodb.net:27017/Cluster0?ssl=true&replicaSet=atlas-7gmb8j-shard-0&authSource=admin&retryWrites=true&w=majority';
+
+// process.env.MONGODB_URI = 'mongodb://localhost:27017/rtgs';
 
 
 const history = require('connect-history-api-fallback');
