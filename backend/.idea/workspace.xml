@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="" />
+    <list default="true" id="475d47f7-f6ed-4025-8411-29380c09e7ec" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/adminCENTRAL-BANK.id" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/adminCENTRAL-BANK.id" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/agsBANK-001.id" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/agsBANK-001.id" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/bank-001.id" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/bank-001.id" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/bank-002.id" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/bank-002.id" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/central-bank.id" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/central-bank.id" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wallet/tasinBANK-002.id" beforeDir="false" afterPath="$PROJECT_DIR$/wallet/tasinBANK-002.id" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/Home.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +52,7 @@
       <workItem from="1597411427733" duration="47713000" />
       <workItem from="1597546510497" duration="7000" />
       <workItem from="1597560145422" duration="15736000" />
+      <workItem from="1597658549612" duration="1737000" />
     </task>
     <servers />
   </component>

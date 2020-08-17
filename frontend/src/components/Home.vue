@@ -285,9 +285,9 @@
 					<div class="col-8 text-left mr-auto">
 						<b-form-select
 							class="w-75"
-							:class="{'border-danger':errorFlags.transactionType}"
-							v-model="transactionDetails.transactionType"
-							:options="['deposit','withdraw']">
+							:class="{'border-danger':errorFlags.settlementPayee}"
+							v-model="settlementDetails.payee"
+							:options="getUsernames">
 						</b-form-select>
 					</div>
 					<div class="col-4 pt-2 ml-auto">
@@ -339,9 +339,9 @@
 					<div class="col-8 text-left mr-auto">
 						<b-form-select
 							class="w-75"
-							:class="{'border-danger':errorFlags.settlementPayee}"
-							v-model="settlementDetails.payee"
-							:options="getUsernames">
+							:class="{'border-danger':errorFlags.transactionType}"
+							v-model="transactionDetails.transactionType"
+							:options="['deposit','withdraw']">
 						</b-form-select>
 					</div>
 					<div class="col-4 pt-2 ml-auto">
@@ -357,7 +357,7 @@
 					</div>
 					<div class="col-12 mx-auto">
 						<button
-							@click="issueSettlement"
+							@click="issueTransaction"
 							class="btn btn-success px-4 mr-5">
 							Issue
 						</button>
@@ -567,10 +567,7 @@ export default {
 				});
 				this.settlements[index].isApproved = true;
 			}).catch(err => {
-				Toast.fire({
-					icon: 'error',
-					title: 'Settlement approval unsuccessful'
-				});
+				console.log(err);
 			});
 		},
 		finalizeSettlement(index) {
@@ -592,12 +589,10 @@ export default {
 					icon: 'success',
 					title: 'Settlement finalized successfully'
 				});
+				this.fetchSessionDetails();
 				this.settlements[index].isFinalized = true;
 			}).catch(err => {
-				Toast.fire({
-					icon: 'error',
-					title: 'Settlement finalization unsuccessful'
-				});
+				console.log(err);
 			});
 		},
 		getFormattedDate(date) {
